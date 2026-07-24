@@ -1,40 +1,34 @@
 import "./Navbar.css";
+import { useNavigate } from "react-router-dom";
+
 function Navbar() {
+  const navigate = useNavigate();
+
   return (
-    <nav
-      style={{
-        background: "#0f172a",
-        color: "white",
-        padding: "18px 50px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div className="brand">
-<h2 className="brand-name">⚡ BIJLIKART</h2>
-  <p className="brand-owner">Founded by Mohit Sharma</p>
-</div>
+    <nav className="navbar">
+      <div
+        className="logo"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+      >
+        <h2>⚡ BIJLIKART</h2>
+        <p>by Mohit Sharma</p>
+      </div>
 
       <input
-  type="text"
-  placeholder="🔍 Search TVs, ACs, Fridge..."
-  style={{
-    width: "420px",
-    padding: "12px 18px",
-    borderRadius: "30px",
-    border: "none",
-    outline: "none",
-    fontSize: "16px",
-  }}
-/>
+        type="text"
+        placeholder="Search AC, TV, Fridge, Cooler..."
+      />
 
       <div className="nav-buttons">
-  <button className="login-btn">👤 Login</button>
-  <button className="cart-btn-navbar">
-    🛒 Cart <span className="cart-count">0</span>
-  </button>
-</div>
+        <button onClick={() => navigate("/login")}>
+          Login
+        </button>
+
+        <button onClick={() => navigate("/cart")}>
+          🛒 Cart
+        </button>
+      </div>
     </nav>
   );
 }

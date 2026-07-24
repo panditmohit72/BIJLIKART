@@ -5,7 +5,7 @@ import lgac from "../assets/products/lg-ac.jpg";
 import whirlpoolfridge from "../assets/products/whirlpool-fridge.jpg";
 import hplaptop from "../assets/products/hp-laptop.jpg";
 
-function Products() {
+function Products({ addToCart }) {
   const products = [
     {
       image: samsungtv,
@@ -44,6 +44,7 @@ function Products() {
       <div className="product-grid">
         {products.map((item) => (
           <div className="product-card" key={item.name}>
+
             <img src={item.image} alt={item.name} />
 
             <h3>{item.name}</h3>
@@ -53,12 +54,16 @@ function Products() {
             <p className="price">{item.price}</p>
 
             <p className="old-price">
-            <del>{item.oldPrice}</del>
-             </p>
+              <del>{item.oldPrice}</del>
+            </p>
 
-            <button className="cart-btn">
-              Add to Cart 
+            <button
+              className="cart-btn"
+              onClick={() => addToCart(item)}
+            >
+              Add to Cart
             </button>
+
           </div>
         ))}
       </div>
