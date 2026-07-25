@@ -1,30 +1,64 @@
-.brands{
-    padding:60px 80px;
+.brands {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 60px 6%;
+  background: #f5f7fb;
 }
 
-.brands h2{
-    text-align:center;
-    margin-bottom:30px;
-    font-size:35px;
+.brands h2 {
+  text-align: center;
+  margin: 0 0 30px;
+  font-size: 35px;
+  color: #172033;
 }
 
-.brand-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
+.brand-grid {
+  max-width: 1400px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
-.brand-card{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
-    transition:.3s;
+.brand-card {
+  background: white;
+  padding: 30px 15px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
 }
 
-.brand-card:hover{
-    transform:translateY(-5px);
+.brand-card:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 850px) {
+  .brand-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .brands {
+    padding: 42px 18px;
+  }
+
+  .brands h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .brand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .brand-card {
+    padding: 22px 8px;
+    border-radius: 12px;
+    font-size: 16px;
+  }
 }
