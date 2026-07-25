@@ -110,10 +110,7 @@ function TeamPermissions() {
       active: true,
     };
 
-    setStaff((oldStaff) => [
-      ...oldStaff,
-      newEmployee,
-    ]);
+    setStaff((oldStaff) => [...oldStaff, newEmployee]);
 
     setName("");
     setMobile("");
@@ -171,9 +168,7 @@ function TeamPermissions() {
     }
 
     setStaff((oldStaff) =>
-      oldStaff.filter(
-        (employee) => employee.id !== id
-      )
+      oldStaff.filter((employee) => employee.id !== id)
     );
   }
 
@@ -196,87 +191,66 @@ function TeamPermissions() {
 
   return (
     <div className="admin-layout">
-
       {/* SIDEBAR */}
 
-      <aside className="admin-sidebar">
-
+      <aside
+        className="admin-sidebar"
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          boxSizing: "border-box",
+        }}
+      >
         <div className="admin-logo">
           <h2>⚡ BIJLIKART</h2>
           <p>Owner Panel</p>
         </div>
 
         <div className="admin-menu">
-
           <button onClick={() => navigate("/admin")}>
             📊 Dashboard
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/sellers")
-            }
-          >
+          <button onClick={() => navigate("/admin/sellers")}>
             🏪 Sellers
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/products")
-            }
-          >
+          <button onClick={() => navigate("/admin/products")}>
             📦 Products
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/orders")
-            }
-          >
+          <button onClick={() => navigate("/admin/orders")}>
             🛒 Orders
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/commission")
-            }
-          >
+          <button onClick={() => navigate("/admin/commission")}>
             💰 Commission
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/customers")
-            }
-          >
+          <button onClick={() => navigate("/admin/customers")}>
             👥 Customers
           </button>
 
           <button
             className="active"
-            onClick={() =>
-              navigate("/admin/team")
-            }
+            onClick={() => navigate("/admin/team")}
           >
             👨‍💼 Team & Permissions
           </button>
 
-          <button
-            onClick={() =>
-              navigate("/admin/settings")
-            }
-          >
+          <button onClick={() => navigate("/admin/settings")}>
             ⚙️ Settings
           </button>
-
         </div>
+
+        {/* BOTTOM SIDEBAR BUTTONS */}
 
         <div
           style={{
-            position: "absolute",
-            bottom: "25px",
-            left: "18px",
-            right: "18px",
+            marginTop: "auto",
+            paddingTop: "30px",
+            paddingBottom: "5px",
           }}
         >
           <button
@@ -289,7 +263,7 @@ function TeamPermissions() {
               background: "transparent",
               color: "white",
               cursor: "pointer",
-              marginBottom: "9px",
+              marginBottom: "10px",
             }}
           >
             ← Customer Website
@@ -311,28 +285,23 @@ function TeamPermissions() {
             🚪 Owner Logout
           </button>
         </div>
-
       </aside>
 
-      {/* MAIN */}
+      {/* MAIN AREA */}
 
       <main className="admin-main">
-
         <div className="admin-header">
-
           <div>
             <h1>Team & Permissions</h1>
 
             <p>
-              Control employee accounts and access
-              permissions.
+              Control employee accounts and access permissions.
             </p>
           </div>
 
           <div className="admin-badge">
             👑 Owner Only
           </div>
-
         </div>
 
         {/* SECURITY NOTICE */}
@@ -356,16 +325,15 @@ function TeamPermissions() {
               color: "#7c2d12",
             }}
           >
-            Commission, settlements, employee
-            permissions and sensitive marketplace
-            settings remain Owner-only.
+            Commission, settlements, employee permissions
+            and sensitive marketplace settings remain
+            Owner-only.
           </p>
         </div>
 
         {/* STATS */}
 
         <div className="admin-stats">
-
           <div className="stat-card">
             <span>👨‍💼</span>
             <p>Total Employees</p>
@@ -403,15 +371,12 @@ function TeamPermissions() {
             <p>Owner Accounts</p>
             <h2>1</h2>
           </div>
-
         </div>
 
         {/* ADD EMPLOYEE */}
 
         <section className="admin-section">
-
           <div className="section-title">
-
             <div>
               <h2>Add Employee</h2>
 
@@ -419,7 +384,6 @@ function TeamPermissions() {
                 Create a new BIJLIKART staff account.
               </p>
             </div>
-
           </div>
 
           <form
@@ -427,13 +391,12 @@ function TeamPermissions() {
             style={{
               display: "grid",
               gridTemplateColumns:
-                "1fr 1fr 1fr auto",
+                "repeat(auto-fit, minmax(200px, 1fr))",
               gap: "15px",
               alignItems: "end",
               marginTop: "20px",
             }}
           >
-
             <div>
               <label style={labelStyle}>
                 Employee Name
@@ -507,36 +470,34 @@ function TeamPermissions() {
                 color: "white",
                 cursor: "pointer",
                 fontWeight: "bold",
+                minHeight: "44px",
               }}
             >
               + Add Employee
             </button>
-
           </form>
-
         </section>
 
         {/* EMPLOYEE LIST */}
 
         <section className="admin-section">
-
           <div className="section-title">
-
             <div>
               <h2>Employee Accounts</h2>
 
               <p>
-                Change roles, permissions or disable
-                access.
+                Change roles, permissions or disable access.
               </p>
             </div>
-
           </div>
 
-          <div className="table-wrapper">
-
+          <div
+            className="table-wrapper"
+            style={{
+              overflowX: "auto",
+            }}
+          >
             <table>
-
               <thead>
                 <tr>
                   <th>Employee</th>
@@ -552,11 +513,8 @@ function TeamPermissions() {
               </thead>
 
               <tbody>
-
                 {staff.map((employee) => (
-
                   <tr key={employee.id}>
-
                     <td>
                       <strong>
                         {employee.name}
@@ -657,13 +615,14 @@ function TeamPermissions() {
                       )}
                     </td>
 
-                    <td>
-
+                    <td
+                      style={{
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       <button
                         onClick={() =>
-                          toggleEmployee(
-                            employee.id
-                          )
+                          toggleEmployee(employee.id)
                         }
                         style={{
                           padding: "8px 10px",
@@ -685,9 +644,7 @@ function TeamPermissions() {
 
                       <button
                         onClick={() =>
-                          removeEmployee(
-                            employee.id
-                          )
+                          removeEmployee(employee.id)
                         }
                         style={{
                           padding: "8px 10px",
@@ -700,23 +657,14 @@ function TeamPermissions() {
                       >
                         Remove
                       </button>
-
                     </td>
-
                   </tr>
-
                 ))}
-
               </tbody>
-
             </table>
-
           </div>
-
         </section>
-
       </main>
-
     </div>
   );
 }

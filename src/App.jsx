@@ -15,12 +15,20 @@ import Products from "./components/Products";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
+import ProductDetails from "./pages/ProductDetails";
+import SellerRegistration from "./pages/SellerRegistration";
+
+import SellerLogin from "./pages/SellerLogin";
 import SellerDashboard from "./pages/SellerDashboard";
 
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSellers from "./pages/AdminSellers";
 import AdminProducts from "./pages/AdminProducts";
+import AdminOrders from "./pages/AdminOrders";
+import AdminCommission from "./pages/AdminCommission";
+import AdminCustomers from "./pages/AdminCustomers";
+import AdminSettings from "./pages/AdminSettings";
 import TeamPermissions from "./pages/TeamPermissions";
 
 import StaffLogin from "./pages/StaffLogin";
@@ -41,7 +49,6 @@ function OwnerRoute({ children }) {
   const staffLoggedIn =
     localStorage.getItem("bijlikartStaffAuth") === "true";
 
-  // Staff tries to open Owner page
   if (
     (!ownerLoggedIn || ownerRole !== "owner") &&
     staffLoggedIn
@@ -54,7 +61,6 @@ function OwnerRoute({ children }) {
     );
   }
 
-  // Nobody logged in
   if (
     !ownerLoggedIn ||
     ownerRole !== "owner"
@@ -62,6 +68,36 @@ function OwnerRoute({ children }) {
     return (
       <Navigate
         to="/admin-login"
+        replace
+      />
+    );
+  }
+
+  return children;
+}
+
+/* =================================
+   SELLER PROTECTED ROUTE
+================================= */
+
+function SellerRoute({ children }) {
+  const sellerLoggedIn =
+    localStorage.getItem("bijlikartSellerAuth") === "true";
+
+  const sellerMobile =
+    localStorage.getItem("bijlikartSellerMobile");
+
+  const sellerId =
+    localStorage.getItem("bijlikartSellerId");
+
+  if (
+    !sellerLoggedIn ||
+    !sellerMobile ||
+    !sellerId
+  ) {
+    return (
+      <Navigate
+        to="/seller-login"
         replace
       />
     );
@@ -103,13 +139,15 @@ function StaffRoute({ children }) {
 }
 
 /* =================================
-   APP
+   MAIN APP
 ================================= */
 
 function App() {
   const [cart, setCart] = useState([]);
 
-  /* ADD TO CART */
+  /* =================================
+     ADD TO CART
+  ================================= */
 
   function addToCart(product) {
     setCart((oldCart) => {
@@ -145,7 +183,9 @@ function App() {
     );
   }
 
-  /* REMOVE FROM CART */
+  /* =================================
+     REMOVE FROM CART
+  ================================= */
 
   function removeFromCart(
     indexToRemove
@@ -158,7 +198,9 @@ function App() {
     );
   }
 
-  /* INCREASE QUANTITY */
+  /* =================================
+     INCREASE QUANTITY
+  ================================= */
 
   function increaseQuantity(index) {
     setCart((oldCart) =>
@@ -174,7 +216,9 @@ function App() {
     );
   }
 
-  /* DECREASE QUANTITY */
+  /* =================================
+     DECREASE QUANTITY
+  ================================= */
 
   function decreaseQuantity(index) {
     setCart((oldCart) =>
@@ -195,7 +239,9 @@ function App() {
     );
   }
 
-  /* CUSTOMER HOME */
+  /* =================================
+     CUSTOMER HOME
+  ================================= */
 
   function Home() {
     return (
@@ -225,11 +271,10 @@ function App() {
       }}
     >
       <BrowserRouter>
-
         <Routes>
 
           {/* =====================
-              CUSTOMER WEBSITE
+              CUSTOMER
           ===================== */}
 
           <Route
@@ -242,12 +287,66 @@ function App() {
             element={<Login />}
           />
 
-          {/* SELLER */}
+          <Route
+            path="/product/:id"
+            element={
+              <ProductDetails
+                addToCart={addToCart}
+              />
+            }
+          />
+
+          <Route
+            path="/cart"
+            element={
+              <Cart
+                cart={cart}
+                removeFromCart={
+                  removeFromCart
+                }
+                increaseQuantity={
+                  increaseQuantity
+                }
+                decreaseQuantity={
+                  decreaseQuantity
+                }
+              />
+            }
+          />
+
+          <Route
+            path="/checkout"
+            element={
+              <Checkout
+                cart={cart}
+              />
+            }
+          />
+
+          {/* =====================
+              SELLER
+          ===================== */}
+
+          <Route
+            path="/seller-register"
+            element={
+              <SellerRegistration />
+            }
+          />
+
+          <Route
+            path="/seller-login"
+            element={
+              <SellerLogin />
+            }
+          />
 
           <Route
             path="/seller"
             element={
-              <SellerDashboard />
+              <SellerRoute>
+                <SellerDashboard />
+              </SellerRoute>
             }
           />
 
@@ -285,7 +384,7 @@ function App() {
           />
 
           {/* =====================
-              OWNER ONLY ROUTES
+              OWNER ONLY
           ===================== */}
 
           <Route
@@ -316,6 +415,33 @@ function App() {
           />
 
           <Route
+            path="/admin/orders"
+            element={
+              <OwnerRoute>
+                <AdminOrders />
+              </OwnerRoute>
+            }
+          />
+
+          <Route
+            path="/admin/commission"
+            element={
+              <OwnerRoute>
+                <AdminCommission />
+              </OwnerRoute>
+            }
+          />
+
+          <Route
+            path="/admin/customers"
+            element={
+              <OwnerRoute>
+                <AdminCustomers />
+              </OwnerRoute>
+            }
+          />
+
+          <Route
             path="/admin/team"
             element={
               <OwnerRoute>
@@ -324,8 +450,17 @@ function App() {
             }
           />
 
+          <Route
+            path="/admin/settings"
+            element={
+              <OwnerRoute>
+                <AdminSettings />
+              </OwnerRoute>
+            }
+          />
+
           {/* =====================
-              STAFF ROUTES
+              STAFF
           ===================== */}
 
           <Route
@@ -338,40 +473,20 @@ function App() {
           />
 
           {/* =====================
-              CART
+              UNKNOWN URL
           ===================== */}
 
           <Route
-            path="/cart"
+            path="*"
             element={
-              <Cart
-                cart={cart}
-                removeFromCart={
-                  removeFromCart
-                }
-                increaseQuantity={
-                  increaseQuantity
-                }
-                decreaseQuantity={
-                  decreaseQuantity
-                }
-              />
-            }
-          />
-
-          {/* CHECKOUT */}
-
-          <Route
-            path="/checkout"
-            element={
-              <Checkout
-                cart={cart}
+              <Navigate
+                to="/"
+                replace
               />
             }
           />
 
         </Routes>
-
       </BrowserRouter>
     </div>
   );
