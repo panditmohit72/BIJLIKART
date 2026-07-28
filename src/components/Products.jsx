@@ -6,14 +6,19 @@ import lgAC from "../assets/products/lg-ac.jpg";
 import whirlpoolFridge from "../assets/products/whirlpool-fridge.jpg";
 import hpLaptop from "../assets/products/hp-laptop.jpg";
 
-function Products({ addToCart }) {
+function Products({
+  addToCart,
+  searchText = "",
+  searchCategory = "all",
+  clearSearch,
+}) {
   const navigate = useNavigate();
 
   const products = [
     {
       id: 1,
       name: "Samsung 55 inch 4K Smart TV",
-      category: "TV",
+      category: "Television",
       image: samsungTV,
       price: 49999,
       oldPrice: 59999,
@@ -21,8 +26,9 @@ function Products({ addToCart }) {
       reviews: 126,
       shop: "Sharma Electronics",
       location: "Mathura",
-      delivery: "Free Delivery",
-      discount: "17% OFF",
+      delivery: "FREE Delivery",
+      discount: "17% off",
+      tag: "Deal",
     },
     {
       id: 2,
@@ -36,11 +42,12 @@ function Products({ addToCart }) {
       shop: "Gupta Electronics",
       location: "Mathura",
       delivery: "Free Installation",
-      discount: "13% OFF",
+      discount: "13% off",
+      tag: "Summer Deal",
     },
     {
       id: 3,
-      name: "Whirlpool 265L Double Door Fridge",
+      name: "Whirlpool 265L Double Door Refrigerator",
       category: "Refrigerator",
       image: whirlpoolFridge,
       price: 27999,
@@ -49,8 +56,9 @@ function Products({ addToCart }) {
       reviews: 78,
       shop: "Agarwal Electronics",
       location: "Mathura",
-      delivery: "Free Delivery",
-      discount: "15% OFF",
+      delivery: "FREE Delivery",
+      discount: "15% off",
+      tag: "Limited Deal",
     },
     {
       id: 4,
@@ -64,7 +72,8 @@ function Products({ addToCart }) {
       shop: "Digital World",
       location: "Mathura",
       delivery: "Delivery Today",
-      discount: "12% OFF",
+      discount: "12% off",
+      tag: "Top Deal",
     },
     {
       id: 5,
@@ -77,13 +86,14 @@ function Products({ addToCart }) {
       reviews: 67,
       shop: "Sharma Electronics",
       location: "Mathura",
-      delivery: "Free Delivery",
-      discount: "17% OFF",
+      delivery: "FREE Delivery",
+      discount: "17% off",
+      tag: "Deal",
     },
     {
       id: 6,
       name: "Sony Wireless Noise Cancelling Headphones",
-      category: "Headphones",
+      category: "Audio",
       image: hpLaptop,
       price: 14999,
       oldPrice: 18999,
@@ -92,7 +102,8 @@ function Products({ addToCart }) {
       shop: "Sound Zone",
       location: "Mathura",
       delivery: "Delivery Tomorrow",
-      discount: "21% OFF",
+      discount: "21% off",
+      tag: "Hot Deal",
     },
     {
       id: 7,
@@ -105,8 +116,9 @@ function Products({ addToCart }) {
       reviews: 89,
       shop: "Digital World",
       location: "Mathura",
-      delivery: "Free Delivery",
-      discount: "22% OFF",
+      delivery: "FREE Delivery",
+      discount: "22% off",
+      tag: "Deal",
     },
     {
       id: 8,
@@ -120,7 +132,8 @@ function Products({ addToCart }) {
       shop: "Mobile Hub",
       location: "Mathura",
       delivery: "Delivery Today",
-      discount: "17% OFF",
+      discount: "17% off",
+      tag: "Best Seller",
     },
   ];
 
@@ -128,11 +141,139 @@ function Products({ addToCart }) {
     return new Intl.NumberFormat("en-IN").format(price);
   }
 
+  /* =============================
+     SMART SEARCH
+  ============================= */
+
+  function normalize(value) {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function categoryMatches(product, selectedCategory) {
+    if (
+      !selectedCategory ||
+      selectedCategory === "all"
+    ) {
+      return true;
+    }
+
+    const selected = normalize(selectedCategory);
+    const productCategory = normalize(product.category);
+    const productName = normalize(product.name);
+
+    if (selected === "tv") {
+      return (
+        productCategory.includes("television") ||
+        productName.includes("tv")
+      );
+    }
+
+    if (selected === "ac") {
+      return (
+        productCategory.includes("air conditioner") ||
+        productName.includes(" ac")
+      );
+    }
+
+    if (selected === "refrigerator") {
+      return (
+        productCategory.includes("refrigerator") ||
+        productName.includes("fridge")
+      );
+    }
+
+    if (selected === "mobile") {
+      return (
+        productCategory.includes("mobile") ||
+        productName.includes("smartphone") ||
+        productName.includes("mobile")
+      );
+    }
+
+    if (selected === "laptop") {
+      return (
+        productCategory.includes("laptop") ||
+        productName.includes("laptop")
+      );
+    }
+
+    if (selected === "washing machine") {
+      return (
+        productCategory.includes("washing machine") ||
+        productName.includes("washing machine")
+      );
+    }
+
+    if (selected === "audio") {
+      return (
+        productCategory.includes("audio") ||
+        productCategory.includes("speaker") ||
+        productName.includes("headphone") ||
+        productName.includes("speaker")
+      );
+    }
+
+    return productCategory.includes(selected);
+  }
+
+  function textMatches(product, text) {
+    if (!text.trim()) {
+      return true;
+    }
+
+    const query = normalize(text);
+
+    const searchableText = normalize(
+      `${product.name} ${product.category} ${product.shop} ${product.location}`
+    );
+
+    /*
+      Common customer words:
+      fridge -> refrigerator
+      tv -> television
+      ac -> air conditioner
+      phone -> mobile/smartphone
+    */
+
+    const aliases = {
+      fridge: "refrigerator",
+      tv: "television",
+      ac: "air conditioner",
+      phone: "mobile",
+      smartphone: "mobile",
+      headphones: "audio",
+      headphone: "audio",
+    };
+
+    if (searchableText.includes(query)) {
+      return true;
+    }
+
+    const alias = aliases[query];
+
+    if (alias) {
+      return searchableText.includes(alias);
+    }
+
+    return false;
+  }
+
+  const filteredProducts = products.filter(
+    (product) =>
+      categoryMatches(product, searchCategory) &&
+      textMatches(product, searchText)
+  );
+
+  const searchActive =
+    searchText.trim() !== "" ||
+    searchCategory !== "all";
+
   function handleAddToCart(product) {
     if (addToCart) {
       addToCart(product);
-    } else {
-      alert(`${product.name} added to cart!`);
     }
   }
 
@@ -140,145 +281,313 @@ function Products({ addToCart }) {
     navigate(`/product/${product.id}`);
   }
 
-  function handleSellerJoin() {
-    navigate("/seller-register");
-  }
-
   return (
-    <section className="products-section" id="products">
-      <div className="products-heading">
-        <div>
-          <span className="products-small-title">
-            LOCAL DEALS
-          </span>
+    <section
+      className="bk-products-page"
+      id="products"
+    >
+      {/* TODAY'S DEALS */}
 
-          <h2>Featured Products</h2>
+      {!searchActive && (
+        <div className="bk-deals-section">
+          <div className="bk-product-section-heading">
+            <div>
+              <h2>Today's Deals</h2>
 
-          <p>
-            Compare electronics from trusted local sellers
-            across Mathura.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          className="view-all-products"
-          onClick={() =>
-            alert("All Products page will be added soon!")
-          }
-        >
-          View All Products →
-        </button>
-      </div>
-
-      <div className="products-grid">
-        {products.map((product) => (
-          <div className="product-card" key={product.id}>
-            <div className="product-image-box">
-              <span className="discount-badge">
-                {product.discount}
-              </span>
-
-              <span className="local-badge">
-                📍 Local Seller
-              </span>
-
-              <img
-                src={product.image}
-                alt={product.name}
-                className="product-image"
-                onClick={() => handleViewDetails(product)}
-                style={{ cursor: "pointer" }}
-              />
+              <p>
+                Great savings on electronics from local sellers
+              </p>
             </div>
 
-            <div className="product-info">
-              <span className="product-category">
-                {product.category}
-              </span>
+            <button type="button">
+              See all deals
+            </button>
+          </div>
 
-              <h3>{product.name}</h3>
+          <div className="bk-deals-scroll">
+            {products.slice(0, 6).map((product) => (
+              <article
+                className="bk-deal-product"
+                key={product.id}
+                onClick={() =>
+                  handleViewDetails(product)
+                }
+              >
+                <div className="bk-deal-image">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                  />
+                </div>
 
-              <div className="product-rating">
-                <span>⭐ {product.rating}</span>
+                <div className="bk-deal-label">
+                  <strong>
+                    {product.discount}
+                  </strong>
 
-                <span className="review-count">
-                  ({product.reviews} reviews)
-                </span>
-              </div>
-
-              <div className="product-price-row">
-                <strong className="product-price">
-                  ₹{formatPrice(product.price)}
-                </strong>
-
-                <span className="old-price">
-                  ₹{formatPrice(product.oldPrice)}
-                </span>
-              </div>
-
-              <div className="seller-box">
-                <div>
-                  <span className="sold-by">
-                    Sold by
+                  <span>
+                    {product.tag}
                   </span>
+                </div>
+
+                <h3>{product.name}</h3>
+
+                <div className="bk-deal-price">
+                  <sup>₹</sup>
 
                   <strong>
-                    🏪 {product.shop}
+                    {formatPrice(product.price)}
                   </strong>
                 </div>
 
-                <span className="verified-seller">
-                  ✓ Verified
-                </span>
-              </div>
-
-              <div className="delivery-info">
-                🚚 {product.delivery}
-                {" • "}
-                📍 {product.location}
-              </div>
-
-              <div className="product-buttons">
-                <button
-                  type="button"
-                  className="details-button"
-                  onClick={() => handleViewDetails(product)}
-                >
-                  View Details
-                </button>
-
-                <button
-                  type="button"
-                  className="cart-button"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  🛒 Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="local-marketplace-banner">
-        <div>
-          <span className="banner-icon">🏪</span>
-
-          <div>
-            <h3>Own an Electronics Shop?</h3>
-
-            <p>
-              Join BIJLIKART and start selling your products
-              online to customers across Mathura.
-            </p>
+                <small>
+                  M.R.P.:{" "}
+                  <span>
+                    ₹{formatPrice(product.oldPrice)}
+                  </span>
+                </small>
+              </article>
+            ))}
           </div>
         </div>
+      )}
 
-        <button type="button" onClick={handleSellerJoin}>
-          Sell on BIJLIKART →
-        </button>
+      {/* FEATURED / SEARCH RESULTS */}
+
+      <div className="bk-featured-section">
+        <div className="bk-product-section-heading">
+          <div>
+            <h2>
+              {searchActive
+                ? "Search Results"
+                : "Featured Electronics"}
+            </h2>
+
+            <p>
+              {searchActive
+                ? `${filteredProducts.length} product${
+                    filteredProducts.length === 1
+                      ? ""
+                      : "s"
+                  } found`
+                : "Shop from trusted electronics stores near you"}
+            </p>
+          </div>
+
+          {searchActive ? (
+            <button
+              type="button"
+              onClick={clearSearch}
+            >
+              Clear Search
+            </button>
+          ) : (
+            <button type="button">
+              View all
+            </button>
+          )}
+        </div>
+
+        {/* NO RESULTS */}
+
+        {filteredProducts.length === 0 ? (
+          <div
+            style={{
+              background: "#fff",
+              padding: "60px 20px",
+              textAlign: "center",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "50px",
+                marginBottom: "15px",
+              }}
+            >
+              🔍
+            </div>
+
+            <h2
+              style={{
+                marginBottom: "8px",
+              }}
+            >
+              No products found
+            </h2>
+
+            <p
+              style={{
+                color: "#666",
+                marginBottom: "20px",
+              }}
+            >
+              Try another product name or category.
+            </p>
+
+            <button
+              type="button"
+              onClick={clearSearch}
+              style={{
+                border: "none",
+                background: "#ffd814",
+                padding: "10px 20px",
+                borderRadius: "20px",
+                cursor: "pointer",
+                fontWeight: "600",
+              }}
+            >
+              View All Products
+            </button>
+          </div>
+        ) : (
+          <div className="bk-products-grid">
+            {filteredProducts.map((product) => (
+              <article
+                className="bk-product-card"
+                key={product.id}
+              >
+                <div
+                  className="bk-product-image"
+                  onClick={() =>
+                    handleViewDetails(product)
+                  }
+                >
+                  <span className="bk-product-deal-badge">
+                    {product.discount}
+                  </span>
+
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                  />
+                </div>
+
+                <div className="bk-product-body">
+                  <span className="bk-product-category">
+                    {product.category}
+                  </span>
+
+                  <h3
+                    onClick={() =>
+                      handleViewDetails(product)
+                    }
+                  >
+                    {product.name}
+                  </h3>
+
+                  <div className="bk-product-rating">
+                    <span>
+                      {product.rating} ⭐⭐⭐⭐⭐
+                    </span>
+
+                    <small>
+                      {product.reviews}
+                    </small>
+                  </div>
+
+                  <div className="bk-product-price">
+                    <sup>₹</sup>
+
+                    <strong>
+                      {formatPrice(product.price)}
+                    </strong>
+                  </div>
+
+                  <div className="bk-product-mrp">
+                    M.R.P.:{" "}
+                    <span>
+                      ₹{formatPrice(product.oldPrice)}
+                    </span>
+                  </div>
+
+                  <div className="bk-product-delivery">
+                    <strong>
+                      {product.delivery}
+                    </strong>
+
+                    <span>
+                      📍 {product.location}
+                    </span>
+                  </div>
+
+                  <div className="bk-local-seller">
+                    <span>🏪</span>
+
+                    <div>
+                      <small>Sold by</small>
+
+                      <strong>
+                        {product.shop}
+                      </strong>
+                    </div>
+
+                    <span className="bk-verified">
+                      ✓
+                    </span>
+                  </div>
+
+                  <div className="bk-product-actions">
+                    <button
+                      type="button"
+                      className="bk-add-cart"
+                      onClick={() =>
+                        handleAddToCart(product)
+                      }
+                    >
+                      Add to Cart
+                    </button>
+
+                    <button
+                      type="button"
+                      className="bk-view-product"
+                      onClick={() =>
+                        handleViewDetails(product)
+                      }
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* SELLER BANNER */}
+
+      {!searchActive && (
+        <div className="bk-seller-home-banner">
+          <div className="bk-seller-banner-icon">
+            🏪
+          </div>
+
+          <div className="bk-seller-banner-content">
+            <small>
+              SELL WITH BIJLIKART
+            </small>
+
+            <h2>
+              Own an electronics shop?
+            </h2>
+
+            <p>
+              List your products online and reach more
+              customers through BIJLIKART.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/seller-register")
+            }
+          >
+            Start Selling →
+          </button>
+        </div>
+      )}
     </section>
   );
 }

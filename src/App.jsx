@@ -6,16 +6,15 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import Brands from "./components/Brands";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Categories from "./components/Categories";
 import Products from "./components/Products";
 
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import ProductDetails from "./pages/ProductDetails";
+import SearchResults from "./pages/SearchResults";
 import SellerRegistration from "./pages/SellerRegistration";
 
 import SellerLogin from "./pages/SellerLogin";
@@ -34,7 +33,8 @@ import TeamPermissions from "./pages/TeamPermissions";
 import StaffLogin from "./pages/StaffLogin";
 import StaffDashboard from "./pages/StaffDashboard";
 import AccessDenied from "./pages/AccessDenied";
-
+import Footer from "./components/Footer";
+import HomeProductRows from "./components/HomeProductRows";
 /* =================================
    OWNER PROTECTED ROUTE
 ================================= */
@@ -144,7 +144,18 @@ function StaffRoute({ children }) {
 
 function App() {
   const [cart, setCart] = useState([]);
+const [searchText, setSearchText] = useState("");
+const [searchCategory, setSearchCategory] = useState("all");
 
+function handleSearch(text, category) {
+  setSearchText(text);
+  setSearchCategory(category);
+}
+
+function clearSearch() {
+  setSearchText("");
+  setSearchCategory("all");
+}
   /* =================================
      ADD TO CART
   ================================= */
@@ -243,23 +254,35 @@ function App() {
      CUSTOMER HOME
   ================================= */
 
-  function Home() {
-    return (
-      <>
-        <Navbar />
+function Home() {
+  return (
+    <>
+      <Navbar
+        cartCount={cart.reduce(
+          (total, item) =>
+            total + item.quantity,
+          0
+        )}
+        onSearch={handleSearch}
+      />
 
-        <Hero />
+      <Hero />
 
-        <Brands />
+      <Products
+        addToCart={addToCart}
+        searchText={searchText}
+        searchCategory={searchCategory}
+        clearSearch={clearSearch}
+      />
 
-        <Categories />
+      <HomeProductRows
+        addToCart={addToCart}
+      />
 
-        <Products
-          addToCart={addToCart}
-        />
-      </>
-    );
-  }
+      <Footer />
+    </>
+  );
+}
 
   return (
     <div
@@ -288,13 +311,34 @@ function App() {
           />
 
           <Route
-            path="/product/:id"
-            element={
-              <ProductDetails
-                addToCart={addToCart}
-              />
-            }
-          />
+  path="/product/:id"
+  element={
+    <ProductDetails
+      addToCart={addToCart}
+    />
+  }
+/>
+
+<Route
+  path="/search"
+  element={
+    <SearchResults
+      addToCart={addToCart}
+    />
+  }
+/>
+
+<Route
+  path="/cart"
+  element={
+    <Cart
+      cart={cart}
+      removeFromCart={removeFromCart}
+      increaseQuantity={increaseQuantity}
+      decreaseQuantity={decreaseQuantity}
+    />
+  }
+/>
 
           <Route
             path="/cart"

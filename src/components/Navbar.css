@@ -1,112 +1,1078 @@
-.navbar {
-  width: 100%;
+/* =========================================
+   BIJLIKART NAVBAR
+========================================= */
+
+* {
   box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 30px;
-  padding: 18px 5%;
-  background: #0d47a1;
 }
 
-.logo {
-  flex-shrink: 0;
-}
-
-.logo h2 {
-  margin: 0;
+.bk-header {
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+  background: #14213d;
   color: white;
-  font-size: 24px;
+}
+
+/* =========================================
+   TOP ROW
+========================================= */
+
+.bk-top-row {
+  width: 100%;
+  min-height: 68px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 8px 3%;
+}
+
+/* =========================================
+   MENU
+========================================= */
+
+.bk-menu {
+  display: none;
+
+  border: none;
+  background: transparent;
+  color: white;
+
+  font-size: 27px;
+
+  cursor: pointer;
+}
+
+/* =========================================
+   LOGO
+========================================= */
+
+.bk-logo {
+  min-width: 180px;
+
+  display: flex;
+  flex-direction: column;
+
+  cursor: pointer;
+}
+
+.bk-logo strong {
+  font-size: 21px;
+  line-height: 1.1;
+
   white-space: nowrap;
 }
 
-.logo p {
-  margin: 3px 0 0;
-  color: #dbeafe;
+.bk-logo small {
+  margin-left: 24px;
+  margin-top: 3px;
+
+  color: #bfdbfe;
+
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+/* =========================================
+   LOCATION
+========================================= */
+
+.bk-desktop-location {
+  border: 1px solid transparent;
+
+  background: transparent;
+  color: white;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 5px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+.bk-desktop-location:hover {
+  border-color: white;
+}
+
+.bk-desktop-location > span {
+  font-size: 18px;
+}
+
+.bk-desktop-location div {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+}
+
+.bk-desktop-location small {
+  color: #cbd5e1;
+
+  font-size: 10px;
+}
+
+.bk-desktop-location strong {
   font-size: 12px;
 }
 
-.navbar input {
+/* =========================================
+   AMAZON STYLE SEARCH WRAPPER
+========================================= */
+
+.bk-amazon-search-wrapper {
+  position: relative;
+
   flex: 1;
-  width: auto;
-  max-width: 650px;
+  min-width: 200px;
+
+  z-index: 5000;
+}
+
+/* SEARCH BAR */
+
+.bk-amazon-search {
+  width: 100%;
+  height: 44px;
+
+  display: flex;
+  align-items: stretch;
+
+  background: white;
+
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.bk-amazon-search:focus-within {
+  outline: 3px solid #60a5fa;
+}
+
+/* CATEGORY SELECT */
+
+.bk-amazon-search select {
+  width: 62px;
+  flex: 0 0 62px;
+
+  border: none;
+  border-right: 1px solid #d5d9d9;
+
+  outline: none;
+
+  padding: 0 7px;
+
+  background: #f3f4f6;
+  color: #374151;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.bk-amazon-search select:hover {
+  background: #e5e7eb;
+}
+
+/* SEARCH INPUT */
+
+.bk-amazon-search input {
+  flex: 1;
   min-width: 0;
-  padding: 12px 18px;
-  box-sizing: border-box;
-  border-radius: 30px;
+
   border: none;
   outline: none;
-  font-size: 16px;
+
+  background: white;
+  color: #111827;
+
+  padding: 0 13px;
+
+  font-size: 15px;
 }
 
-.nav-buttons {
+.bk-amazon-search input::placeholder {
+  color: #6b7280;
+}
+
+/* CLEAR X */
+
+.bk-amazon-clear {
+  width: 38px;
+  flex: 0 0 38px;
+
+  border: none;
+
+  background: white;
+  color: #555;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+.bk-amazon-clear:hover {
+  background: #f3f4f6;
+}
+
+/* SEARCH BUTTON */
+
+.bk-amazon-search-button {
+  width: 52px;
+  flex: 0 0 52px;
+
+  border: none;
+
+  background: #60a5fa;
+  color: #111827;
+
+  font-size: 19px;
+
+  cursor: pointer;
+}
+
+.bk-amazon-search-button:hover {
+  background: #3b82f6;
+}
+
+/* =========================================
+   AUTOCOMPLETE DROPDOWN
+
+   IMPORTANT:
+   This is the vertical search dropdown.
+========================================= */
+
+.bk-amazon-suggestions {
+  position: absolute;
+
+  top: 47px;
+
+  /*
+    62px = category dropdown width.
+    Isliye suggestions actual text input ke
+    starting point se open hongi.
+  */
+
+  left: 62px;
+  right: 52px;
+
+  background: #ffffff;
+  color: #111;
+
+  border: 1px solid #c7c7c7;
+  border-top: none;
+
+  border-radius: 0 0 4px 4px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 5px 12px
+    rgba(0, 0, 0, 0.28);
+
+  z-index: 99999;
+}
+
+/* EACH SEARCH SUGGESTION */
+
+.bk-amazon-suggestion {
+  width: 100%;
+  min-height: 34px;
+
+  border: none;
+
+  background: white;
+  color: #111;
+
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+
+  gap: 9px;
+
+  padding: 7px 12px;
+
+  text-align: left;
+
+  cursor: pointer;
 }
 
-.nav-buttons button {
-  margin: 0;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 20px;
+.bk-amazon-suggestion:hover {
+  background: #eeeeee;
+}
+
+.bk-search-icon {
+  width: 17px;
+  flex: 0 0 17px;
+
+  color: #444;
+
+  font-size: 17px;
+
+  text-align: center;
+}
+
+.bk-amazon-suggestion strong {
+  font-size: 13px;
+
+  font-weight: 500;
+
+  line-height: 1.25;
+
+  color: #111;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================
+   ACCOUNT / ORDERS / CART
+========================================= */
+
+.bk-account,
+.bk-orders,
+.bk-cart {
+  border: 1px solid transparent;
+
+  background: transparent;
+  color: white;
+
   cursor: pointer;
-  font-weight: bold;
+}
+
+.bk-account:hover,
+.bk-orders:hover,
+.bk-cart:hover {
+  border-color: white;
+}
+
+.bk-account,
+.bk-orders {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  padding: 7px 5px;
+
   white-space: nowrap;
 }
 
-.nav-buttons button:hover {
-  background: orange;
+.bk-account span,
+.bk-orders span {
+  font-size: 10px;
+}
+
+.bk-account strong,
+.bk-orders strong {
+  font-size: 12px;
+}
+
+/* CART */
+
+.bk-cart {
+  position: relative;
+
+  padding: 6px;
+
+  font-size: 27px;
+}
+
+.bk-cart-count {
+  position: absolute;
+
+  top: -2px;
+  right: -3px;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 4px;
+
+  border-radius: 50%;
+
+  background: #f59e0b;
+  color: #111827;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* =========================================
+   CATEGORY NAVIGATION
+========================================= */
+
+.bk-category-nav {
+  width: 100%;
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 2px;
+
+  padding: 0 3%;
+
+  background: #223553;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.bk-category-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.bk-category-nav button {
+  flex: 0 0 auto;
+
+  border: 1px solid transparent;
+
+  background: transparent;
   color: white;
+
+  padding: 10px 11px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 14px;
-    padding: 14px 16px;
-  }
-
-  .logo h2 {
-    font-size: 20px;
-  }
-
-  .logo p {
-    font-size: 10px;
-  }
-
-  .nav-buttons {
-    justify-content: flex-end;
-  }
-
-  .nav-buttons button {
-    padding: 9px 12px;
-    font-size: 13px;
-  }
-
-  .navbar input {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    width: 100%;
-    max-width: none;
-    padding: 11px 16px;
-    font-size: 14px;
-  }
+.bk-category-nav button:hover {
+  border-color: white;
 }
 
-@media (max-width: 380px) {
-  .logo h2 {
+/* =========================================
+   MOBILE SEARCH - HIDDEN ON DESKTOP
+========================================= */
+
+.bk-mobile-search-area {
+  display: none;
+}
+
+.bk-mobile-delivery {
+  display: none;
+}
+
+/* =========================================
+   LOCATION MODAL
+========================================= */
+
+.bk-location-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.bk-location-modal {
+  width: 100%;
+  max-width: 420px;
+
+  background: white;
+  color: #111827;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 50px
+    rgba(0, 0, 0, 0.3);
+}
+
+.bk-location-modal-header {
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px 18px;
+
+  background: #f3f4f6;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bk-location-modal-header h2 {
+  margin: 0;
+
+  font-size: 19px;
+}
+
+.bk-close-location {
+  border: none;
+
+  background: transparent;
+
+  color: #374151;
+
+  font-size: 28px;
+
+  cursor: pointer;
+}
+
+.bk-location-modal > p {
+  margin: 0;
+
+  padding: 20px 20px 12px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+}
+
+/* PIN FORM */
+
+.bk-pincode-form {
+  display: flex;
+
+  gap: 9px;
+
+  padding: 5px 20px 15px;
+}
+
+.bk-pincode-form input {
+  flex: 1;
+  min-width: 0;
+
+  height: 42px;
+
+  border: 1px solid #9ca3af;
+
+  border-radius: 7px;
+
+  outline: none;
+
+  padding: 0 12px;
+
+  font-size: 15px;
+}
+
+.bk-pincode-form input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(37, 99, 235, 0.15);
+}
+
+.bk-pincode-form button {
+  border: none;
+
+  border-radius: 7px;
+
+  background: #2563eb;
+  color: white;
+
+  padding: 0 18px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.bk-clear-location {
+  margin: 0 20px 10px;
+
+  border: none;
+
+  background: transparent;
+  color: #2563eb;
+
+  padding: 0;
+
+  cursor: pointer;
+}
+
+.bk-location-note {
+  margin: 10px 20px 20px;
+
+  padding: 11px;
+
+  border-radius: 7px;
+
+  background: #eff6ff;
+  color: #1e40af;
+
+  font-size: 12px;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1050px) {
+  .bk-top-row {
+    gap: 8px;
+
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .bk-logo {
+    min-width: 155px;
+  }
+
+  .bk-logo strong {
     font-size: 18px;
   }
 
-  .nav-buttons {
+  .bk-desktop-location {
+    display: none;
+  }
+
+  .bk-orders span,
+  .bk-orders strong {
+    font-size: 10px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 800px) {
+  .bk-top-row {
+    min-height: 60px;
+
+    padding: 7px 12px;
+
+    gap: 9px;
+  }
+
+  /* MENU */
+
+  .bk-menu {
+    display: block;
+
+    flex: 0 0 auto;
+
+    padding: 2px;
+
+    font-size: 24px;
+  }
+
+  /* LOGO */
+
+  .bk-logo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bk-logo strong {
+    font-size: 17px;
+  }
+
+  .bk-logo small {
+    display: none;
+  }
+
+  /* DESKTOP SEARCH OFF */
+
+  .bk-amazon-search-wrapper {
+    display: none;
+  }
+
+  .bk-desktop-location {
+    display: none;
+  }
+
+  .bk-orders {
+    display: none;
+  }
+
+  /* ACCOUNT */
+
+  .bk-account {
+    flex-direction: row;
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 4px;
+  }
+
+  .bk-account span {
+    max-width: 80px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bk-account strong {
+    display: none;
+  }
+
+  .bk-account::after {
+    content: "👤";
+
+    font-size: 22px;
+  }
+
+  /* CART */
+
+  .bk-cart {
+    font-size: 24px;
+
+    padding: 4px;
+  }
+
+  /* =====================================
+     MOBILE SEARCH
+  ===================================== */
+
+  .bk-mobile-search-area {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+
+    padding: 0 12px 9px;
+
+    z-index: 5000;
+  }
+
+  .bk-mobile-search-area
+    .bk-amazon-search {
+    height: 48px;
+
+    border-radius: 8px;
+  }
+
+  .bk-mobile-search-area
+    .bk-amazon-search input {
+    border-radius: 8px 0 0 8px;
+
+    padding-left: 14px;
+
+    font-size: 15px;
+  }
+
+  .bk-mobile-search-area
+    .bk-amazon-search-button {
+    width: 55px;
+    flex-basis: 55px;
+
+    font-size: 20px;
+  }
+
+  /* MOBILE AUTOCOMPLETE */
+
+  .bk-mobile-amazon-suggestions {
+    position: absolute;
+
+    top: 48px;
+    left: 12px;
+    right: 12px;
+
+    z-index: 99999;
+
+    background: white;
+    color: #111;
+
+    border: 1px solid #c7c7c7;
+    border-top: none;
+
+    border-radius: 0 0 7px 7px;
+
+    overflow: hidden;
+
+    box-shadow:
+      0 7px 18px
+      rgba(0, 0, 0, 0.25);
+  }
+
+  .bk-mobile-amazon-suggestions
+    .bk-amazon-suggestion {
+    min-height: 39px;
+
+    padding: 8px 13px;
+  }
+
+  .bk-mobile-amazon-suggestions
+    .bk-amazon-suggestion strong {
+    font-size: 13px;
+  }
+
+  /* CATEGORY NAV */
+
+  .bk-category-nav {
+    min-height: 39px;
+
+    padding: 0 8px;
+
+    background: #14213d;
+  }
+
+  .bk-category-nav button {
+    padding: 9px 10px;
+
+    font-size: 12px;
+  }
+
+  /* DELIVERY */
+
+  .bk-mobile-delivery {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: none;
+
+    background: #304867;
+    color: white;
+
+    padding: 11px 15px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 390px) {
+  .bk-top-row {
+    padding-left: 9px;
+    padding-right: 9px;
+
     gap: 6px;
   }
 
-  .nav-buttons button {
-    padding: 8px 9px;
-    font-size: 12px;
+  .bk-menu {
+    font-size: 21px;
+  }
+
+  .bk-logo strong {
+    font-size: 15px;
+  }
+
+  .bk-account span {
+    max-width: 58px;
+
+    font-size: 10px;
+  }
+
+  .bk-account::after {
+    font-size: 20px;
+  }
+
+  .bk-cart {
+    font-size: 22px;
+  }
+
+  .bk-mobile-search-area {
+    padding-left: 9px;
+    padding-right: 9px;
+  }
+
+  .bk-mobile-amazon-suggestions {
+    left: 9px;
+    right: 9px;
+  }
+}
+/* =========================================
+   AMAZON STYLE ALL MENU
+========================================= */
+
+.bk-all-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 999999;
+}
+
+.bk-all-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 365px;
+  max-width: calc(100vw - 60px);
+  height: 100vh;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+  animation: bkDrawerSlide 0.25s ease-out;
+}
+
+@keyframes bkDrawerSlide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.bk-all-header {
+  position: relative;
+  height: 60px;
+  padding: 0 24px;
+  background: #223553;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.bk-all-header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bk-all-header > div > span {
+  font-size: 25px;
+}
+
+.bk-all-header strong {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bk-all-header > button {
+  position: absolute;
+  top: 9px;
+  left: calc(100% + 12px);
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 31px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bk-all-content {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #ffffff;
+  padding-bottom: 30px;
+}
+
+.bk-all-content::-webkit-scrollbar {
+  width: 7px;
+}
+
+.bk-all-content::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.bk-all-section {
+  padding: 18px 0;
+  border-bottom: 1px solid #d5d9d9;
+}
+
+.bk-all-section h2 {
+  margin: 0;
+  padding: 0 25px 12px;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bk-all-section button {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 25px;
+  border: none;
+  background: #ffffff;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bk-all-section button:hover {
+  background: #eaeded;
+}
+
+.bk-all-section button span {
+  color: #879596;
+  font-size: 23px;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .bk-all-drawer {
+    width: 82vw;
+    max-width: 340px;
+  }
+
+  .bk-all-header {
+    padding: 0 18px;
+  }
+
+  .bk-all-header strong {
+    font-size: 16px;
+  }
+
+  .bk-all-header > button {
+    left: calc(100% + 7px);
+    width: 38px;
+    height: 38px;
+    font-size: 28px;
+  }
+
+  .bk-all-section h2 {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .bk-all-section button {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
