@@ -673,9 +673,10 @@ function AdminDashboard() {
 
           </div>
 
-          <div className="admin-badge">
-            👑 Owner / Super Admin
-          </div>
+         <div className="admin-badge">
+       <div>👑 Owner / Super Admin</div>
+       <small>Mohit Sharma</small>
+         </div>
 
         </div>
 

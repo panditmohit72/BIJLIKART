@@ -15,13 +15,19 @@ body {
 
 .admin-sidebar {
   width: 250px;
-  min-height: 100vh;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+
   background: linear-gradient(180deg, #08123b, #073b7a);
   color: white;
   padding: 28px 18px;
-  position: fixed;
-  left: 0;
-  top: 0;
 }
 
 .admin-logo h2 {
@@ -35,10 +41,7 @@ body {
 }
 
 .admin-menu {
-  margin-top: 35px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex: 1;
 }
 
 .admin-menu button {
@@ -63,17 +66,11 @@ body {
 }
 
 .website-btn {
-  position: absolute;
-  bottom: 30px;
-  left: 18px;
-  width: calc(100% - 36px);
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #5faeff;
-  background: transparent;
-  color: white;
-  cursor: pointer;
+  margin-top: auto;
+  width: 100%;
 }
+   
+
 
 .admin-main {
   margin-left: 250px;
@@ -105,6 +102,13 @@ body {
   font-weight: 600;
 }
 
+.admin-badge small {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
 .admin-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -1,41 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function CustomerSignup() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
+
   const [otpSent, setOtpSent] = useState(false);
 
   const DEMO_OTP = "123456";
 
   function getRegisteredCustomers() {
     try {
-      const saved = localStorage.getItem(
-        "bijlikartRegisteredCustomers"
-      );
+      const savedCustomers =
+        localStorage.getItem(
+          "bijlikartRegisteredCustomers"
+        );
 
-      return saved ? JSON.parse(saved) : [];
+      return savedCustomers
+        ? JSON.parse(savedCustomers)
+        : [];
     } catch {
       return [];
     }
-  }
-
-  function findRegisteredCustomer() {
-    const cleanName = name.trim().toLowerCase();
-    const cleanMobile = mobile.trim();
-
-    const customers = getRegisteredCustomers();
-
-    return customers.find(
-      (customer) =>
-        customer.mobile === cleanMobile &&
-        customer.name
-          ?.trim()
-          .toLowerCase() === cleanName
-    );
   }
 
   function sendOtp(e) {
@@ -45,7 +34,7 @@ function Login() {
     const cleanMobile = mobile.trim();
 
     if (cleanName.length < 2) {
-      alert("Please enter your registered name.");
+      alert("Please enter your full name.");
       return;
     }
 
@@ -56,31 +45,21 @@ function Login() {
       return;
     }
 
-    const customers = getRegisteredCustomers();
+    const customers =
+      getRegisteredCustomers();
 
-    const mobileAccount = customers.find(
-      (customer) =>
-        customer.mobile === cleanMobile
-    );
-
-    if (!mobileAccount) {
-      const createAccount = window.confirm(
-        "No BIJLIKART account is registered with this mobile number.\n\nWould you like to create an account?"
+    const alreadyRegistered =
+      customers.some(
+        (customer) =>
+          customer.mobile === cleanMobile
       );
 
-      if (createAccount) {
-        navigate("/signup");
-      }
-
-      return;
-    }
-
-    const customer = findRegisteredCustomer();
-
-    if (!customer) {
+    if (alreadyRegistered) {
       alert(
-        "The name does not match the registered account for this mobile number."
+        "An account with this mobile number already exists. Please login."
       );
+
+      navigate("/login");
       return;
     }
 
@@ -91,7 +70,7 @@ function Login() {
     );
   }
 
-  function verifyOtp(e) {
+  function verifyAndRegister(e) {
     e.preventDefault();
 
     if (otp.length !== 6) {
@@ -106,54 +85,60 @@ function Login() {
       return;
     }
 
-    const customer = findRegisteredCustomer();
+    const cleanName = name.trim();
+    const cleanMobile = mobile.trim();
 
-    if (!customer) {
-      alert(
-        "Customer account could not be verified. Please login again."
+    const customers =
+      getRegisteredCustomers();
+
+    const alreadyRegistered =
+      customers.some(
+        (customer) =>
+          customer.mobile === cleanMobile
       );
 
-      resetLogin();
+    if (alreadyRegistered) {
+      alert(
+        "This mobile number is already registered. Please login."
+      );
+
+      navigate("/login");
       return;
     }
 
-    localStorage.setItem(
-      "bijlikartCustomerAuth",
-      "true"
-    );
+    const newCustomer = {
+      id: Date.now(),
+      name: cleanName,
+      mobile: cleanMobile,
+      registeredAt:
+        new Date().toISOString(),
+    };
+
+    const updatedCustomers = [
+      ...customers,
+      newCustomer,
+    ];
 
     localStorage.setItem(
-      "bijlikartCustomerName",
-      customer.name
+      "bijlikartRegisteredCustomers",
+      JSON.stringify(updatedCustomers)
     );
-
-    localStorage.setItem(
-      "bijlikartCustomerMobile",
-      customer.mobile
-    );
-
-    if (customer.id) {
-      localStorage.setItem(
-        "bijlikartCustomerId",
-        String(customer.id)
-      );
-    }
 
     alert(
-      `Welcome back, ${customer.name}!`
+      "🎉 Your BIJLIKART account has been created successfully!\n\nYou can now login."
     );
 
-    navigate("/");
+    navigate("/login");
   }
 
-  function resetLogin() {
+  function changeDetails() {
     setOtpSent(false);
     setOtp("");
   }
 
   return (
     <div style={pageStyle}>
-      <div style={loginCardStyle}>
+      <div style={signupCardStyle}>
         {/* LOGO */}
 
         <div style={logoAreaStyle}>
@@ -170,12 +155,12 @@ function Login() {
 
         <div style={headingAreaStyle}>
           <h1 style={headingStyle}>
-            Welcome back
+            Create your account
           </h1>
 
           <p style={subheadingStyle}>
-            Login using your registered name
-            and mobile number.
+            Join BIJLIKART to shop electronics
+            from trusted local sellers.
           </p>
         </div>
 
@@ -184,7 +169,7 @@ function Login() {
             {/* NAME */}
 
             <label style={labelStyle}>
-              Registered Name
+              Full Name
               <span style={requiredStyle}>
                 *
               </span>
@@ -194,7 +179,7 @@ function Login() {
               type="text"
               value={name}
               autoComplete="name"
-              placeholder="Enter your registered name"
+              placeholder="Enter your full name"
               onChange={(e) =>
                 setName(e.target.value)
               }
@@ -204,7 +189,7 @@ function Login() {
             {/* MOBILE */}
 
             <label style={mobileLabelStyle}>
-              Registered Mobile Number
+              Mobile Number
               <span style={requiredStyle}>
                 *
               </span>
@@ -218,9 +203,9 @@ function Login() {
               <input
                 type="tel"
                 inputMode="numeric"
+                autoComplete="tel"
                 maxLength="10"
                 value={mobile}
-                autoComplete="tel"
                 placeholder="10-digit mobile number"
                 onChange={(e) =>
                   setMobile(
@@ -233,7 +218,7 @@ function Login() {
               />
             </div>
 
-            {/* INFO */}
+            {/* SECURITY NOTE */}
 
             <div style={securityBoxStyle}>
               <span style={securityIconStyle}>
@@ -241,16 +226,13 @@ function Login() {
               </span>
 
               <div>
-                <strong
-                  style={securityTitleStyle}
-                >
-                  Secure OTP Login
+                <strong style={securityTitleStyle}>
+                  Password-free account
                 </strong>
 
                 <p style={securityTextStyle}>
-                  Only customers who have
-                  already created a BIJLIKART
-                  account can login.
+                  Your mobile number will be
+                  verified using a one-time OTP.
                 </p>
               </div>
             </div>
@@ -263,36 +245,36 @@ function Login() {
             </button>
           </form>
         ) : (
-          <form onSubmit={verifyOtp}>
-            {/* OTP */}
+          <form onSubmit={verifyAndRegister}>
+            {/* OTP SUCCESS */}
 
-            <div style={otpHeaderStyle}>
+            <div style={otpIconAreaStyle}>
               <div style={otpIconStyle}>
                 📱
               </div>
 
               <h2 style={otpHeadingStyle}>
-                Verify OTP
+                Verify your mobile
               </h2>
 
-              <p style={otpTextStyle}>
-                OTP sent to
+              <p style={otpDescriptionStyle}>
+                We sent a 6-digit OTP to
               </p>
 
-              <strong
-                style={mobileDisplayStyle}
-              >
+              <strong style={mobileDisplayStyle}>
                 +91 {mobile}
               </strong>
 
-              <p style={accountNameStyle}>
-                Logging in as{" "}
+              <p style={nameDisplayStyle}>
+                Account for{" "}
                 <strong>{name.trim()}</strong>
               </p>
             </div>
 
+            {/* OTP */}
+
             <label style={labelStyle}>
-              Enter 6-digit OTP
+              Enter OTP
             </label>
 
             <input
@@ -321,79 +303,40 @@ function Login() {
               type="submit"
               style={verifyButtonStyle}
             >
-              ✓ Verify OTP & Login
+              ✓ Verify & Create Account
             </button>
 
             <button
               type="button"
-              onClick={resetLogin}
+              onClick={changeDetails}
               style={secondaryButtonStyle}
             >
-              ← Change name or mobile
+              ← Change name or mobile number
             </button>
           </form>
         )}
 
-        {/* SIGN UP */}
+        {/* LOGIN */}
 
-        {!otpSent && (
-          <>
-            <div style={dividerStyle}>
-              <span
-                style={dividerLineStyle}
-              />
+        <div style={dividerStyle}>
+          <span style={dividerLineStyle} />
 
-              <span
-                style={dividerTextStyle}
-              >
-                New to BIJLIKART?
-              </span>
+          <span style={dividerTextStyle}>
+            Already registered?
+          </span>
 
-              <span
-                style={dividerLineStyle}
-              />
-            </div>
+          <span style={dividerLineStyle} />
+        </div>
 
-            <button
-              type="button"
-              onClick={() =>
-                navigate("/signup")
-              }
-              style={signupButtonStyle}
-            >
-              Create New Account
-            </button>
-          </>
-        )}
-
-        {/* SELLER */}
-
-        {!otpSent && (
-          <div style={sellerBoxStyle}>
-            <div>
-              <strong
-                style={sellerTitleStyle}
-              >
-                🏪 Are you a seller?
-              </strong>
-
-              <p style={sellerTextStyle}>
-                Use the dedicated seller login
-                for your shop account.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() =>
-                navigate("/seller-login")
-              }
-              style={sellerButtonStyle}
-            >
-              Seller Login →
-            </button>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={() =>
+            navigate("/login")
+          }
+          style={loginButtonStyle}
+        >
+          Login to your account
+        </button>
 
         {/* HOME */}
 
@@ -404,6 +347,12 @@ function Login() {
         >
           ← Back to BIJLIKART
         </button>
+
+        <p style={termsStyle}>
+          By creating an account, you agree to
+          BIJLIKART's Terms & Conditions and
+          Privacy Policy.
+        </p>
       </div>
     </div>
   );
@@ -417,32 +366,33 @@ const pageStyle = {
   minHeight: "100vh",
 
   display: "flex",
-  justifyContent: "center",
   alignItems: "center",
+  justifyContent: "center",
 
   padding: "30px 18px",
 
   boxSizing: "border-box",
 
   background:
-    "linear-gradient(135deg, #eaf2ff 0%, #f8fafc 50%, #eef2ff 100%)",
+    "linear-gradient(135deg, #eaf2ff 0%, #f8fafc 48%, #eef2ff 100%)",
 };
 
-const loginCardStyle = {
+const signupCardStyle = {
   width: "100%",
   maxWidth: "450px",
 
-  padding: "32px",
-
-  boxSizing: "border-box",
-
   background: "#ffffff",
 
-  border: "1px solid #e2e8f0",
+  padding: "32px",
+
   borderRadius: "20px",
+
+  border: "1px solid #e2e8f0",
 
   boxShadow:
     "0 20px 55px rgba(15, 23, 42, 0.13)",
+
+  boxSizing: "border-box",
 };
 
 const logoAreaStyle = {
@@ -616,7 +566,7 @@ const primaryButtonStyle = {
     "0 8px 18px rgba(37, 99, 235, 0.22)",
 };
 
-const otpHeaderStyle = {
+const otpIconAreaStyle = {
   textAlign: "center",
 
   marginBottom: "23px",
@@ -646,7 +596,7 @@ const otpHeadingStyle = {
   fontSize: "21px",
 };
 
-const otpTextStyle = {
+const otpDescriptionStyle = {
   margin: "0 0 3px",
 
   color: "#64748b",
@@ -660,7 +610,7 @@ const mobileDisplayStyle = {
   fontSize: "16px",
 };
 
-const accountNameStyle = {
+const nameDisplayStyle = {
   margin: "8px 0 0",
 
   color: "#475569",
@@ -754,7 +704,7 @@ const dividerTextStyle = {
   whiteSpace: "nowrap",
 };
 
-const signupButtonStyle = {
+const loginButtonStyle = {
   width: "100%",
 
   padding: "13px",
@@ -771,56 +721,10 @@ const signupButtonStyle = {
   cursor: "pointer",
 };
 
-const sellerBoxStyle = {
-  marginTop: "18px",
-
-  padding: "15px",
-
-  border: "1px solid #e2e8f0",
-  borderRadius: "12px",
-
-  background: "#f8fafc",
-
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-
-  gap: "12px",
-};
-
-const sellerTitleStyle = {
-  color: "#334155",
-
-  fontSize: "13px",
-};
-
-const sellerTextStyle = {
-  margin: "4px 0 0",
-
-  color: "#64748b",
-
-  fontSize: "11px",
-  lineHeight: 1.4,
-};
-
-const sellerButtonStyle = {
-  flex: "0 0 auto",
-
-  border: "none",
-
-  background: "transparent",
-
-  color: "#2563eb",
-
-  fontWeight: "800",
-
-  cursor: "pointer",
-};
-
 const homeButtonStyle = {
   display: "block",
 
-  margin: "19px auto 0",
+  margin: "17px auto 0",
 
   border: "none",
 
@@ -833,4 +737,15 @@ const homeButtonStyle = {
   cursor: "pointer",
 };
 
-export default Login;
+const termsStyle = {
+  margin: "22px 0 0",
+
+  color: "#94a3b8",
+
+  textAlign: "center",
+
+  fontSize: "10px",
+  lineHeight: 1.5,
+};
+
+export default CustomerSignup;

@@ -10,9 +10,10 @@ function AdminLogin() {
 
   // DEMO ONLY
   // Real OTP integration later will replace this.
-  const DEMO_OWNER_MOBILE = "9999999999";
+  const DEMO_OWNER_MOBILE = "9012144399";
   const DEMO_OTP = "123456";
-
+ if (mobile !== OWNER_MOBILE) 
+  if (otp !== OWNER_OTP) {
   function sendOtp() {
     if (!/^[6-9]\d{9}$/.test(mobile)) {
       alert("Please enter a valid 10-digit mobile number.");
@@ -290,4 +291,4 @@ const secondaryButton = {
   cursor: "pointer",
 };
 
-export default AdminLogin;
+export default AdminLogin;}

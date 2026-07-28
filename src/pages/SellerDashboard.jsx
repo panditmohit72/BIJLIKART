@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SellerDashboard() {
@@ -9,38 +9,62 @@ function SellerDashboard() {
   /* =====================================================
      PRODUCTS
   ===================================================== */
+const defaultProducts = [
+  {
+    id: 1,
+    name: "Samsung Smart TV",
+    brand: "Samsung",
+    category: "TV",
+    model: "UA55",
+    mrp: 59999,
+    sellingPrice: 49999,
+    stock: 8,
+    warranty: "1 Year",
+    description: "55 inch 4K Smart TV",
+    image: "",
+    images: [],
+    isActive: true,
+  },
+  {
+    id: 2,
+    name: "LG Air Conditioner",
+    brand: "LG",
+    category: "AC",
+    model: "LG-1.5T",
+    mrp: 45999,
+    sellingPrice: 39999,
+    stock: 5,
+    warranty: "1 Year",
+    description: "1.5 Ton inverter air conditioner",
+    image: "",
+    images: [],
+    isActive: true,
+  },
+];
 
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Samsung Smart TV",
-      brand: "Samsung",
-      category: "TV",
-      model: "UA55",
-      mrp: 59999,
-      sellingPrice: 49999,
-      stock: 8,
-      warranty: "1 Year",
-      description: "55 inch 4K Smart TV",
-      image: "",
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: "LG Air Conditioner",
-      brand: "LG",
-      category: "AC",
-      model: "LG-1.5T",
-      mrp: 45999,
-      sellingPrice: 39999,
-      stock: 5,
-      warranty: "1 Year",
-      description: "1.5 Ton inverter air conditioner",
-      image: "",
-      isActive: true,
-    },
-  ]);
+const [products, setProducts] = useState(() => {
+  try {
+    const savedProducts = JSON.parse(
+      localStorage.getItem("bijlikartSellerProducts")
+    );
 
+    if (Array.isArray(savedProducts)) {
+      return savedProducts;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return defaultProducts;
+});
+
+useEffect(() => {
+  localStorage.setItem(
+    "bijlikartSellerProducts",
+    JSON.stringify(products)
+  );
+}, [products]);
+  
   /* =====================================================
      ORDERS
   ===================================================== */
@@ -123,6 +147,7 @@ function SellerDashboard() {
     warranty: "",
     description: "",
     image: "",
+    images: [],
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -135,29 +160,40 @@ function SellerDashboard() {
   ===================================================== */
 
   const [shopProfile, setShopProfile] = useState({
-    shopName: "Demo Electronics Store",
-    ownerName: "Demo Seller",
-    mobile: "9876543210",
-    alternateMobile: "",
-    email: "seller@bijlikart.in",
+  shopName:
+    localStorage.getItem("bijlikartSellerName") ||
+    "Demo Electronics Store",
 
-    gstin: "09ABCDE1234F1Z5",
+  ownerName:
+    localStorage.getItem("bijlikartSellerOwnerName") ||
+    "Demo Seller",
 
-    address:
-      "Krishna Nagar, Near Main Market",
-    city: "Mathura",
-    state: "Uttar Pradesh",
-    pincode: "281001",
+  mobile:
+    localStorage.getItem("bijlikartSellerMobile") ||
+    "9876543210",
 
-    description:
-      "Trusted electronics retailer offering TVs, ACs, refrigerators, washing machines and other home appliances.",
+  alternateMobile: "",
+  email: "seller@bijlikart.in",
 
-    accountHolder: "Demo Electronics Store",
-    bankName: "State Bank of India",
-    accountNumber: "XXXXXXXX1234",
-    ifsc: "SBIN0001234",
-    upiId: "demostore@upi",
-  });
+  gstin: "09ABCDE1234F1Z5",
+
+  address: "Krishna Nagar, Near Main Market",
+  city: "Mathura",
+  state: "Uttar Pradesh",
+  pincode: "281001",
+
+  description:
+    "Trusted electronics retailer offering TVs, ACs, refrigerators, washing machines and other home appliances.",
+
+  accountHolder:
+    localStorage.getItem("bijlikartSellerName") ||
+    "Demo Electronics Store",
+
+  bankName: "State Bank of India",
+  accountNumber: "XXXXXXXX1234",
+  ifsc: "SBIN0001234",
+  upiId: "demostore@upi",
+});
 
   const [profileForm, setProfileForm] =
     useState(shopProfile);
@@ -178,26 +214,147 @@ function SellerDashboard() {
     }));
   }
 
-  function handleImage(e) {
-    const file = e.target.files[0];
+  function handleImages(e) {
+    const files = Array.from(e.target.files || []);
 
-    if (!file) return;
+    if (!files.length) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
+    const imageFiles = files.filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (imageFiles.length !== files.length) {
+      alert("Please select image files only.");
+      e.target.value = "";
       return;
     }
 
-    const reader = new FileReader();
+    const remainingSlots = 5 - (form.images?.length || 0);
 
-    reader.onloadend = () => {
-      setForm((prev) => ({
+    if (remainingSlots <= 0) {
+      alert("You can upload maximum 5 product photos.");
+      e.target.value = "";
+      return;
+    }
+
+    const selectedFiles = imageFiles.slice(0, remainingSlots);
+
+    if (imageFiles.length > remainingSlots) {
+      alert(
+        `Only ${remainingSlots} more photo${
+          remainingSlots === 1 ? "" : "s"
+        } can be added. Maximum 5 photos are allowed.`
+      );
+    }
+
+    Promise.all(
+      selectedFiles.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          })
+      )
+    )
+      .then((newImages) => {
+        setForm((prev) => {
+          const images = [
+            ...(prev.images || []),
+            ...newImages,
+          ].slice(0, 5);
+
+          return {
+            ...prev,
+            images,
+            image: images[0] || "",
+          };
+        });
+      })
+      .catch(() => {
+        alert("Unable to read one of the selected images.");
+      });
+
+    e.target.value = "";
+  }
+
+  function removeProductImage(index) {
+    setForm((prev) => {
+      const images = (prev.images || []).filter(
+        (_, imageIndex) => imageIndex !== index
+      );
+
+      return {
         ...prev,
-        image: reader.result,
-      }));
-    };
+        images,
+        image: images[0] || "",
+      };
+    });
+  }
 
-    reader.readAsDataURL(file);
+  function makeMainProductImage(index) {
+    setForm((prev) => {
+      const images = [...(prev.images || [])];
+
+      if (!images[index]) return prev;
+
+      const [selected] = images.splice(index, 1);
+      images.unshift(selected);
+
+      return {
+        ...prev,
+        images,
+        image: selected,
+      };
+    });
+  }
+
+  function createListingWithAI() {
+    if (!form.name && !form.brand && !form.model) {
+      alert(
+        "Enter at least Product Name, Brand or Model Number first."
+      );
+      return;
+    }
+
+    const productName =
+      form.name ||
+      `${form.brand || ""} ${form.model || ""}`.trim();
+
+    const category =
+      form.category ||
+      (/tv|television/i.test(productName)
+        ? "TV"
+        : /air conditioner|\bac\b/i.test(productName)
+        ? "AC"
+        : /fridge|refrigerator/i.test(productName)
+        ? "Fridge"
+        : /washing/i.test(productName)
+        ? "Washing Machine"
+        : /laptop|notebook/i.test(productName)
+        ? "Laptop"
+        : /mobile|phone|smartphone/i.test(productName)
+        ? "Mobile"
+        : /headphone|earphone/i.test(productName)
+        ? "Headphones"
+        : /speaker/i.test(productName)
+        ? "Speaker"
+        : "Other");
+
+    setForm((prev) => ({
+      ...prev,
+      category: prev.category || category,
+      description:
+        prev.description ||
+        `${productName} from ${prev.brand || "a trusted brand"}. ` +
+          "Add key specifications, included accessories, installation details and warranty information before publishing.",
+    }));
+
+    alert(
+      "✨ Demo AI listing prepared! Category and description suggestions were added. Real AI generation will be connected with the backend."
+    );
   }
 
   function saveProduct(e) {
@@ -242,7 +399,16 @@ function SellerDashboard() {
                 stock: Number(form.stock),
                 warranty: form.warranty,
                 description: form.description,
-                image: form.image,
+                image:
+                  form.images?.[0] ||
+                  form.image ||
+                  "",
+                images:
+                  form.images?.length
+                    ? form.images
+                    : form.image
+                    ? [form.image]
+                    : [],
               }
             : product
         )
@@ -269,7 +435,48 @@ function SellerDashboard() {
       stock: Number(form.stock),
       warranty: form.warranty,
       description: form.description,
-      image: form.image,
+      price: Number(form.sellingPrice),
+oldPrice: Number(form.mrp),
+
+shop: shopProfile.shopName,
+seller: shopProfile.shopName,
+
+location: shopProfile.city,
+
+delivery: "FREE Delivery",
+
+discount:
+  Math.round(
+    ((Number(form.mrp) - Number(form.sellingPrice)) /
+      Number(form.mrp)) *
+      100
+  ) + "% OFF",
+
+rating: 5,
+reviews: 0,
+reviewsCount: 0,
+
+highlights: [
+  form.brand,
+  form.model,
+  form.warranty,
+].filter(Boolean),
+
+specifications: {
+  Brand: form.brand,
+  Model: form.model,
+  Warranty: form.warranty,
+},
+      image:
+        form.images?.[0] ||
+        form.image ||
+        "",
+      images:
+        form.images?.length
+          ? form.images
+          : form.image
+          ? [form.image]
+          : [],
       isActive: true,
     };
 
@@ -297,6 +504,12 @@ function SellerDashboard() {
       warranty: product.warranty || "",
       description: product.description || "",
       image: product.image || "",
+      images:
+        product.images?.length
+          ? product.images
+          : product.image
+          ? [product.image]
+          : [],
     });
 
     setEditingProductId(product.id);
@@ -928,75 +1141,120 @@ function SellerDashboard() {
                 saveProduct
               }
             >
-              <label
-                style={labelStyle}
-              >
-                Product Image
-              </label>
+              <div style={photoUploadCardStyle}>
+                <div style={photoUploadHeaderStyle}>
+                  <div>
+                    <label style={photoUploadTitleStyle}>
+                      Product Photos
+                    </label>
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={
-                  handleImage
-                }
-                style={inputStyle}
-              />
+                    <p style={photoUploadTextStyle}>
+                      Upload up to 5 real product photos. The first
+                      photo becomes the main image and all photos can
+                      appear in the customer product gallery.
+                    </p>
+                  </div>
 
-              {form.image && (
-                <div
-                  style={{
-                    marginBottom:
-                      "20px",
-                  }}
-                >
-                  <img
-                    src={form.image}
-                    alt="Product preview"
-                    style={{
-                      width: "180px",
-                      height:
-                        "150px",
-                      objectFit:
-                        "contain",
-                      border:
-                        "1px solid #e5e7eb",
-                      borderRadius:
-                        "10px",
-                      background:
-                        "#fff",
-                    }}
+                  <span style={photoCountStyle}>
+                    {(form.images || []).length}/5
+                  </span>
+                </div>
+
+                <label style={photoPickerStyle}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImages}
+                    style={{ display: "none" }}
                   />
 
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setForm(
-                          (prev) => ({
-                            ...prev,
-                            image: "",
-                          })
-                        )
-                      }
-                      style={{
-                        marginTop:
-                          "8px",
-                        background:
-                          "transparent",
-                        color:
-                          "#dc2626",
-                        border:
-                          "none",
-                        cursor:
-                          "pointer",
-                      }}
-                    >
-                      Remove Image
-                    </button>
+                  <span style={photoPickerIconStyle}>📸</span>
+
+                  <strong>
+                    Choose Product Photos
+                  </strong>
+
+                  <small>
+                    JPG, PNG or WEBP • Maximum 5 photos
+                  </small>
+                </label>
+
+                {(form.images || []).length > 0 && (
+                  <div style={photoPreviewGridStyle}>
+                    {form.images.map((image, index) => (
+                      <div
+                        key={`${image.slice(0, 30)}-${index}`}
+                        style={photoPreviewCardStyle}
+                      >
+                        <div style={photoImageBoxStyle}>
+                          <img
+                            src={image}
+                            alt={`Product preview ${index + 1}`}
+                            style={photoPreviewImageStyle}
+                          />
+
+                          {index === 0 && (
+                            <span style={mainPhotoBadgeStyle}>
+                              MAIN
+                            </span>
+                          )}
+
+                          <span style={photoNumberBadgeStyle}>
+                            {index + 1}
+                          </span>
+                        </div>
+
+                        <div style={photoActionRowStyle}>
+                          {index !== 0 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                makeMainProductImage(index)
+                              }
+                              style={makeMainButtonStyle}
+                            >
+                              Make Main
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeProductImage(index)
+                            }
+                            style={removePhotoButtonStyle}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                )}
+
+                <div style={aiListingBoxStyle}>
+                  <div>
+                    <strong style={aiListingTitleStyle}>
+                      ✨ AI Listing Assistant
+                    </strong>
+
+                    <p style={aiListingTextStyle}>
+                      Enter basic product details and BIJLIKART can
+                      suggest category and listing text. Backend AI
+                      will later automate richer specifications.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={createListingWithAI}
+                    style={aiButtonStyle}
+                  >
+                    ✨ Create Listing with AI
+                  </button>
                 </div>
-              )}
+              </div>
 
               <div
                 style={
@@ -1429,6 +1687,19 @@ function SellerDashboard() {
                               }
                             >
                               📦
+                            </div>
+                          )}
+
+                          {(product.images?.length || 0) > 1 && (
+                            <div
+                              style={{
+                                marginTop: "5px",
+                                fontSize: "11px",
+                                color: "#64748b",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              📷 {product.images.length} photos
                             </div>
                           )}
                         </td>
@@ -3052,6 +3323,200 @@ function OrderStatus({
 /* =====================================================
    STYLES
 ===================================================== */
+
+const photoUploadCardStyle = {
+  marginBottom: "26px",
+  padding: "22px",
+  borderRadius: "18px",
+  border: "1px solid #dbeafe",
+  background:
+    "linear-gradient(145deg, #f8fbff 0%, #ffffff 55%, #f5f3ff 100%)",
+  boxShadow: "0 10px 28px rgba(37, 99, 235, 0.07)",
+};
+
+const photoUploadHeaderStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: "16px",
+  marginBottom: "16px",
+};
+
+const photoUploadTitleStyle = {
+  display: "block",
+  fontSize: "18px",
+  fontWeight: "800",
+  color: "#0f172a",
+  marginBottom: "5px",
+};
+
+const photoUploadTextStyle = {
+  margin: 0,
+  maxWidth: "680px",
+  color: "#64748b",
+  fontSize: "13px",
+  lineHeight: 1.6,
+};
+
+const photoCountStyle = {
+  flex: "0 0 auto",
+  padding: "7px 11px",
+  borderRadius: "999px",
+  background: "#0f2f5f",
+  color: "#ffffff",
+  fontSize: "12px",
+  fontWeight: "800",
+};
+
+const photoPickerStyle = {
+  minHeight: "145px",
+  border: "2px dashed #93c5fd",
+  borderRadius: "16px",
+  background: "rgba(239,246,255,.72)",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "6px",
+  padding: "18px",
+  color: "#1e3a8a",
+  cursor: "pointer",
+  textAlign: "center",
+};
+
+const photoPickerIconStyle = {
+  fontSize: "32px",
+};
+
+const photoPreviewGridStyle = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(150px, 1fr))",
+  gap: "14px",
+  marginTop: "18px",
+};
+
+const photoPreviewCardStyle = {
+  padding: "9px",
+  borderRadius: "14px",
+  border: "1px solid #e2e8f0",
+  background: "#ffffff",
+  boxShadow: "0 5px 16px rgba(15,23,42,.06)",
+};
+
+const photoImageBoxStyle = {
+  position: "relative",
+  height: "130px",
+  borderRadius: "10px",
+  background: "#f8fafc",
+  overflow: "hidden",
+  display: "grid",
+  placeItems: "center",
+};
+
+const photoPreviewImageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+};
+
+const mainPhotoBadgeStyle = {
+  position: "absolute",
+  top: "7px",
+  left: "7px",
+  padding: "5px 8px",
+  borderRadius: "999px",
+  background: "#16a34a",
+  color: "#ffffff",
+  fontSize: "10px",
+  fontWeight: "900",
+};
+
+const photoNumberBadgeStyle = {
+  position: "absolute",
+  top: "7px",
+  right: "7px",
+  width: "25px",
+  height: "25px",
+  borderRadius: "50%",
+  display: "grid",
+  placeItems: "center",
+  background: "rgba(15,23,42,.82)",
+  color: "#ffffff",
+  fontSize: "11px",
+  fontWeight: "bold",
+};
+
+const photoActionRowStyle = {
+  display: "flex",
+  gap: "7px",
+  marginTop: "9px",
+  flexWrap: "wrap",
+};
+
+const makeMainButtonStyle = {
+  flex: 1,
+  minWidth: "80px",
+  padding: "7px 8px",
+  border: "1px solid #bfdbfe",
+  borderRadius: "8px",
+  background: "#eff6ff",
+  color: "#1d4ed8",
+  fontSize: "11px",
+  fontWeight: "bold",
+  cursor: "pointer",
+};
+
+const removePhotoButtonStyle = {
+  flex: 1,
+  minWidth: "70px",
+  padding: "7px 8px",
+  border: "1px solid #fecaca",
+  borderRadius: "8px",
+  background: "#fff1f2",
+  color: "#dc2626",
+  fontSize: "11px",
+  fontWeight: "bold",
+  cursor: "pointer",
+};
+
+const aiListingBoxStyle = {
+  marginTop: "18px",
+  padding: "16px",
+  borderRadius: "14px",
+  border: "1px solid #ddd6fe",
+  background:
+    "linear-gradient(135deg, #faf5ff, #eff6ff)",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "16px",
+  flexWrap: "wrap",
+};
+
+const aiListingTitleStyle = {
+  color: "#5b21b6",
+};
+
+const aiListingTextStyle = {
+  margin: "5px 0 0",
+  maxWidth: "600px",
+  color: "#64748b",
+  fontSize: "12px",
+  lineHeight: 1.5,
+};
+
+const aiButtonStyle = {
+  border: "none",
+  borderRadius: "10px",
+  padding: "11px 15px",
+  background:
+    "linear-gradient(135deg, #6d28d9, #2563eb)",
+  color: "#ffffff",
+  fontWeight: "800",
+  cursor: "pointer",
+  boxShadow: "0 7px 18px rgba(79,70,229,.22)",
+};
 
 const cardStyle = {
   background: "white",

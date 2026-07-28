@@ -14,7 +14,7 @@ function Products({
 }) {
   const navigate = useNavigate();
 
-  const products = [
+ const defaultProducts = [
     {
       id: 1,
       name: "Samsung 55 inch 4K Smart TV",
@@ -136,7 +136,37 @@ function Products({
       tag: "Best Seller",
     },
   ];
+const sellerProducts = JSON.parse(
+  localStorage.getItem("bijlikartSellerProducts") || "[]"
+);
 
+const products = [
+  ...defaultProducts,
+  ...sellerProducts.map((item) => ({
+    id: item.id,
+    name: item.name,
+    category: item.category,
+    image:
+      item.images && item.images.length
+        ? item.images[0]
+        : item.image || samsungTV,
+    images: item.images || [],
+    price: Number(item.price),
+    oldPrice: Number(item.oldPrice || item.price),
+    rating: item.rating || 5,
+    reviews: item.reviews || 0,
+    shop: item.shop || item.seller || "BIJLIKART Seller",
+    seller: item.shop || item.seller || "BIJLIKART Seller",
+    location: item.location || "Mathura",
+    delivery: item.delivery || "FREE Delivery",
+    discount: item.discount || "New",
+    tag: "New Arrival",
+    stock: "In Stock",
+    warranty: item.warranty || "Seller Warranty",
+    highlights: item.highlights || [],
+    specifications: item.specifications || {},
+  })),
+];
   function formatPrice(price) {
     return new Intl.NumberFormat("en-IN").format(price);
   }

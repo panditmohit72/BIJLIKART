@@ -267,10 +267,54 @@ const products = [
 function ProductDetails({ addToCart }) {
   const navigate = useNavigate();
   const { id } = useParams();
+const sellerProducts = JSON.parse(
+  localStorage.getItem("bijlikartSellerProducts") || "[]"
+);
 
-  const product = products.find(
+const allProducts = [
+  ...products,
+  ...sellerProducts.map((item) => ({
+    ...item,
+    seller: item.shop || item.seller || "BIJLIKART Seller",
+    reviewsCount: item.reviewsCount || 0,
+    rating: item.rating || 5,
+    delivery: item.delivery || "FREE Delivery",
+    stock: item.stock || "In Stock",
+    warranty: item.warranty || "Seller Warranty",
+    highlights: item.highlights || [],
+    specifications: item.specifications || {},
+  })),
+];
+  const product = allProducts.find(
     (item) => item.id === Number(id)
   );
+
+  const productImages =
+    product?.images?.length
+      ? product.images
+      : product?.image
+        ? [product.image]
+        : [];
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showImageViewer, setShowImageViewer] = useState(false);
+
+  const selectedImage =
+    productImages[selectedImageIndex] || product?.image;
+
+  function previousImage() {
+    if (!productImages.length) return;
+    setSelectedImageIndex((current) =>
+      current === 0 ? productImages.length - 1 : current - 1
+    );
+  }
+
+  function nextImage() {
+    if (!productImages.length) return;
+    setSelectedImageIndex((current) =>
+      current === productImages.length - 1 ? 0 : current + 1
+    );
+  }
 
   const [reviews, setReviews] = useState([
     {
@@ -448,28 +492,91 @@ function ProductDetails({ addToCart }) {
         {/* PRODUCT */}
 
         <section style={productSectionStyle}>
-          {/* IMAGE */}
+          {/* PREMIUM PRODUCT GALLERY */}
 
-          <div>
-            <div style={imageBoxStyle}>
-              <span style={discountBadge}>
-                {product.discount}
-              </span>
+          <div style={galleryColumnStyle}>
+            <div style={galleryLayoutStyle}>
+              {productImages.length > 1 && (
+                <div style={thumbnailRailStyle}>
+                  {productImages.map((image, index) => (
+                    <button
+                      key={`${image}-${index}`}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(index)}
+                      style={{
+                        ...thumbnailButtonStyle,
+                        ...(selectedImageIndex === index
+                          ? activeThumbnailStyle
+                          : {}),
+                      }}
+                    >
+                      <img
+                        src={image}
+                        alt={`${product.name} view ${index + 1}`}
+                        style={thumbnailImageStyle}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
 
-              <img
-                src={product.image}
-                alt={product.name}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-              />
+              <div style={premiumImageBoxStyle}>
+                <span style={discountBadge}>{product.discount}</span>
+
+                <span style={photoCountBadgeStyle}>
+                  📷 {selectedImageIndex + 1} / {productImages.length || 1}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setShowImageViewer(true)}
+                  style={mainImageButtonStyle}
+                  title="View large image"
+                >
+                  <img
+                    src={selectedImage}
+                    alt={product.name}
+                    style={premiumMainImageStyle}
+                  />
+                </button>
+
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={previousImage}
+                      style={{ ...galleryArrowStyle, left: "12px" }}
+                    >
+                      ‹
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={nextImage}
+                      style={{ ...galleryArrowStyle, right: "12px" }}
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowImageViewer(true)}
+                  style={expandImageButtonStyle}
+                >
+                  ⛶ View large
+                </button>
+              </div>
+            </div>
+
+            <div style={galleryHintStyle}>
+              <strong>✨ Premium Product Gallery</strong>
+              <small>Tap a photo to view it larger</small>
             </div>
 
             <div style={verifiedBox}>
-              ✓ Available from a verified local BIJLIKART
-              seller
+              ✓ Available from a verified local BIJLIKART seller
             </div>
           </div>
 
@@ -546,6 +653,21 @@ function ProductDetails({ addToCart }) {
                 🚚 <strong>Delivery:</strong>{" "}
                 {product.delivery}
               </p>
+            </div>
+
+            {/* SURPRISE GIFT */}
+
+            <div style={giftCardStyle}>
+              <div style={giftIconStyle}>🎁</div>
+              <div>
+                <small style={giftEyebrowStyle}>BIJLIKART SPECIAL</small>
+                <strong style={giftTitleStyle}>
+                  FREE Surprise Gift with this order
+                </strong>
+                <p style={giftTextStyle}>
+                  Eligible promotional orders can include a surprise gift.
+                </p>
+              </div>
             </div>
 
             {/* SELLER */}
@@ -879,6 +1001,87 @@ function ProductDetails({ addToCart }) {
           </div>
         </section>
       </main>
+
+      {showImageViewer && (
+        <div
+          style={imageViewerOverlayStyle}
+          onClick={() => setShowImageViewer(false)}
+        >
+          <div
+            style={imageViewerCardStyle}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={viewerHeaderStyle}>
+              <div>
+                <strong>{product.name}</strong>
+                <small style={viewerCounterStyle}>
+                  Image {selectedImageIndex + 1} of {productImages.length || 1}
+                </small>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowImageViewer(false)}
+                style={viewerCloseStyle}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={viewerImageAreaStyle}>
+              {productImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={previousImage}
+                  style={{ ...viewerArrowStyle, left: "18px" }}
+                >
+                  ‹
+                </button>
+              )}
+
+              <img
+                src={selectedImage}
+                alt={product.name}
+                style={viewerImageStyle}
+              />
+
+              {productImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={nextImage}
+                  style={{ ...viewerArrowStyle, right: "18px" }}
+                >
+                  ›
+                </button>
+              )}
+            </div>
+
+            {productImages.length > 1 && (
+              <div style={viewerThumbRowStyle}>
+                {productImages.map((image, index) => (
+                  <button
+                    type="button"
+                    key={`viewer-${index}`}
+                    onClick={() => setSelectedImageIndex(index)}
+                    style={{
+                      ...viewerThumbButtonStyle,
+                      ...(selectedImageIndex === index
+                        ? activeThumbnailStyle
+                        : {}),
+                    }}
+                  >
+                    <img
+                      src={image}
+                      alt={`${product.name} ${index + 1}`}
+                      style={thumbnailImageStyle}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1270,6 +1473,268 @@ const trustSection = {
   gridTemplateColumns:
     "repeat(auto-fit, minmax(180px, 1fr))",
   gap: "20px",
+};
+
+const galleryColumnStyle = { minWidth: 0 };
+
+const galleryLayoutStyle = {
+  display: "flex",
+  gap: "14px",
+  alignItems: "stretch",
+};
+
+const thumbnailRailStyle = {
+  width: "72px",
+  flex: "0 0 72px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  maxHeight: "430px",
+  overflowY: "auto",
+  padding: "2px",
+};
+
+const thumbnailButtonStyle = {
+  width: "68px",
+  height: "68px",
+  flex: "0 0 68px",
+  border: "1px solid #dbe2ea",
+  borderRadius: "12px",
+  background: "#fff",
+  padding: "5px",
+  cursor: "pointer",
+};
+
+const activeThumbnailStyle = {
+  border: "2px solid #1688e8",
+  boxShadow: "0 0 0 3px rgba(22,136,232,0.12)",
+};
+
+const thumbnailImageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+};
+
+const premiumImageBoxStyle = {
+  position: "relative",
+  flex: 1,
+  minWidth: 0,
+  height: "430px",
+  border: "1px solid #e2e8f0",
+  borderRadius: "20px",
+  background: "linear-gradient(145deg,#fff,#f8fbff)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
+  boxShadow: "0 14px 35px rgba(15,23,42,.08)",
+};
+
+const photoCountBadgeStyle = {
+  position: "absolute",
+  top: "15px",
+  right: "15px",
+  zIndex: 5,
+  background: "rgba(15,23,42,.82)",
+  color: "#fff",
+  borderRadius: "999px",
+  padding: "7px 11px",
+  fontSize: "12px",
+  fontWeight: "bold",
+};
+
+const mainImageButtonStyle = {
+  width: "100%",
+  height: "100%",
+  border: "none",
+  background: "transparent",
+  padding: "45px 42px 55px",
+  cursor: "zoom-in",
+};
+
+const premiumMainImageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+};
+
+const galleryArrowStyle = {
+  position: "absolute",
+  top: "50%",
+  transform: "translateY(-50%)",
+  zIndex: 6,
+  width: "42px",
+  height: "42px",
+  borderRadius: "50%",
+  border: "1px solid #dbe2ea",
+  background: "rgba(255,255,255,.95)",
+  color: "#172033",
+  fontSize: "31px",
+  cursor: "pointer",
+  boxShadow: "0 6px 18px rgba(15,23,42,.14)",
+};
+
+const expandImageButtonStyle = {
+  position: "absolute",
+  right: "14px",
+  bottom: "14px",
+  zIndex: 6,
+  border: "1px solid #dbe2ea",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,.95)",
+  color: "#334155",
+  padding: "8px 12px",
+  fontWeight: "bold",
+  cursor: "pointer",
+};
+
+const galleryHintStyle = {
+  marginTop: "12px",
+  padding: "12px 14px",
+  borderRadius: "12px",
+  background: "linear-gradient(90deg,#eff6ff,#f8fafc)",
+  border: "1px solid #dbeafe",
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "10px",
+  flexWrap: "wrap",
+  color: "#334155",
+};
+
+const giftCardStyle = {
+  marginBottom: "22px",
+  padding: "17px",
+  display: "flex",
+  gap: "14px",
+  alignItems: "flex-start",
+  borderRadius: "16px",
+  border: "1px solid #fde68a",
+  background: "linear-gradient(135deg,#fffbea,#fff7ed)",
+};
+
+const giftIconStyle = {
+  width: "48px",
+  height: "48px",
+  flex: "0 0 48px",
+  display: "grid",
+  placeItems: "center",
+  borderRadius: "14px",
+  background: "#fff",
+  fontSize: "25px",
+};
+
+const giftEyebrowStyle = {
+  display: "block",
+  color: "#b45309",
+  fontWeight: "bold",
+  marginBottom: "4px",
+};
+
+const giftTitleStyle = {
+  display: "block",
+  color: "#7c2d12",
+  fontSize: "16px",
+};
+
+const giftTextStyle = {
+  margin: "5px 0 0",
+  color: "#92400e",
+  lineHeight: 1.5,
+  fontSize: "13px",
+};
+
+const imageViewerOverlayStyle = {
+  position: "fixed",
+  inset: 0,
+  zIndex: 999999,
+  background: "rgba(2,6,23,.88)",
+  padding: "24px",
+  display: "grid",
+  placeItems: "center",
+};
+
+const imageViewerCardStyle = {
+  width: "min(1050px,96vw)",
+  maxHeight: "94vh",
+  overflow: "hidden",
+  borderRadius: "22px",
+  background: "#fff",
+  boxShadow: "0 30px 80px rgba(0,0,0,.35)",
+};
+
+const viewerHeaderStyle = {
+  minHeight: "66px",
+  padding: "12px 18px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "15px",
+  borderBottom: "1px solid #e5e7eb",
+};
+
+const viewerCounterStyle = {
+  display: "block",
+  marginTop: "4px",
+  color: "#64748b",
+};
+
+const viewerCloseStyle = {
+  width: "42px",
+  height: "42px",
+  borderRadius: "50%",
+  border: "1px solid #dbe2ea",
+  background: "#fff",
+  fontSize: "28px",
+  cursor: "pointer",
+};
+
+const viewerImageAreaStyle = {
+  position: "relative",
+  height: "min(68vh,650px)",
+  background: "#f8fafc",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "30px 70px",
+};
+
+const viewerImageStyle = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+};
+
+const viewerArrowStyle = {
+  position: "absolute",
+  top: "50%",
+  transform: "translateY(-50%)",
+  width: "48px",
+  height: "48px",
+  border: "1px solid #dbe2ea",
+  borderRadius: "50%",
+  background: "#fff",
+  fontSize: "34px",
+  cursor: "pointer",
+};
+
+const viewerThumbRowStyle = {
+  padding: "12px 18px 18px",
+  display: "flex",
+  justifyContent: "center",
+  gap: "10px",
+  overflowX: "auto",
+};
+
+const viewerThumbButtonStyle = {
+  width: "66px",
+  height: "66px",
+  flex: "0 0 66px",
+  padding: "5px",
+  border: "1px solid #dbe2ea",
+  borderRadius: "11px",
+  background: "#fff",
+  cursor: "pointer",
 };
 
 const notFoundStyle = {

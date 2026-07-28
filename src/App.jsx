@@ -13,6 +13,7 @@ import Products from "./components/Products";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
+import CustomerSignup from "./pages/CustomerSignup";
 import ProductDetails from "./pages/ProductDetails";
 import SearchResults from "./pages/SearchResults";
 import SellerRegistration from "./pages/SellerRegistration";
@@ -35,6 +36,7 @@ import StaffDashboard from "./pages/StaffDashboard";
 import AccessDenied from "./pages/AccessDenied";
 import Footer from "./components/Footer";
 import HomeProductRows from "./components/HomeProductRows";
+import ScrollToTop from "./ScrollToTop";
 /* =================================
    OWNER PROTECTED ROUTE
 ================================= */
@@ -294,6 +296,7 @@ function Home() {
       }}
     >
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
 
           {/* =====================
@@ -309,7 +312,10 @@ function Home() {
             path="/login"
             element={<Login />}
           />
-
+          <Route
+            path="/signup"
+            element={<CustomerSignup />}
+          />
           <Route
   path="/product/:id"
   element={
@@ -339,24 +345,6 @@ function Home() {
     />
   }
 />
-
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                cart={cart}
-                removeFromCart={
-                  removeFromCart
-                }
-                increaseQuantity={
-                  increaseQuantity
-                }
-                decreaseQuantity={
-                  decreaseQuantity
-                }
-              />
-            }
-          />
 
           <Route
             path="/checkout"
