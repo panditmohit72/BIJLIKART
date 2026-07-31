@@ -1,11 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-function SellerDashboard() {
+import { FiMenu, FiX } from "react-icons/fi";
+function SefunllerDashboard() {
   const navigate = useNavigate();
 
   const [activePage, setActivePage] = useState("dashboard");
+const [menuOpen, setMenuOpen] = useState(false);
 
+const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+
+const cameraInputRef = useRef(null);
+const galleryInputRef = useRef(null);
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
   /* =====================================================
      PRODUCTS
   ===================================================== */
@@ -772,13 +787,17 @@ specifications: {
   ) => (
     <button
       onClick={() => {
-        setActivePage(page);
+  setActivePage(page);
 
-        if (page !== "add") {
-          setEditingProductId(null);
-          setForm(emptyForm);
-        }
-      }}
+  if (page !== "add") {
+    setEditingProductId(null);
+    setForm(emptyForm);
+  }
+
+  if (isMobile) {
+    setMenuOpen(false);
+  }
+}}
       style={{
         width: "100%",
         padding: "14px",
@@ -819,15 +838,21 @@ specifications: {
       ================================================= */}
 
       <aside
-        style={{
-          width: "240px",
-          minHeight: "100vh",
-          background: "#0f2f5f",
-          padding: "25px 18px",
-          color: "white",
-          boxSizing: "border-box",
-        }}
-      >
+  style={{
+    width: "240px",
+    minHeight: "100vh",
+    background: "#0f2f5f",
+    padding: "25px 18px",
+    color: "white",
+    boxSizing: "border-box",
+
+    position: isMobile ? "fixed" : "relative",
+    left: isMobile ? (menuOpen ? "0" : "-250px") : "0",
+    top: 0,
+    zIndex: 999,
+    transition: "all 0.3s ease",
+  }}
+>
         <h2
           style={{
             marginBottom: "3px",
@@ -917,22 +942,61 @@ specifications: {
       {/* =================================================
           MAIN AREA
       ================================================= */}
-
+      {isMobile && (
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    style={{
+      position: "fixed",
+      top: "15px",
+      left: "15px",
+      zIndex: 1000,
+      width: "45px",
+      height: "45px",
+      border: "none",
+      borderRadius: "8px",
+      background: "#2563eb",
+      color: "#fff",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+    }}
+  >
+    {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+  </button>
+)}
+      {isMobile && menuOpen && (
+  <div
+    onClick={() => setMenuOpen(false)}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(0,0,0,0.4)",
+      zIndex: 998,
+    }}
+  />
+)}
       <main
         style={{
-          flex: 1,
-          padding: "35px",
-          overflowX: "auto",
-        }}
+  flex: 1,
+  overflowX: "auto",
+  width: "100%",
+  padding: isMobile ? "75px 15px 20px" : "35px",
+  transition: "0.3s",
+}}
       >
         {/* HEADER */}
 
         <div
           style={{
             display: "flex",
-            justifyContent:
-              "space-between",
-            alignItems: "center",
+            flexDirection: isMobile ? "column" : "row",
+             justifyContent: "space-between",
+              alignItems: isMobile ? "flex-start" : "center",
             marginBottom: "30px",
             gap: "20px",
           }}
@@ -962,6 +1026,8 @@ specifications: {
               padding: "12px 18px",
               borderRadius: "10px",
               whiteSpace: "nowrap",
+            width: isMobile ? "100%" : "auto",
+            boxSizing: "border-box",
             }}
           >
             🏪{" "}
@@ -981,8 +1047,9 @@ specifications: {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns:
-                  "repeat(auto-fit, minmax(180px, 1fr))",
+               gridTemplateColumns: isMobile
+                ? "1fr" 
+                : "repeat(auto-fit, minmax(180px, 1fr))",
                 gap: "20px",
               }}
             >
@@ -1160,25 +1227,39 @@ specifications: {
                   </span>
                 </div>
 
-                <label style={photoPickerStyle}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImages}
-                    style={{ display: "none" }}
-                  />
+                <>
+  <input
+    ref={cameraInputRef}
+    type="file"
+    accept="image/*"
+    capture="environment"
+    multiple
+    onChange={handleImages}
+    style={{ display: "none" }}
+  />
 
-                  <span style={photoPickerIconStyle}>📸</span>
+  <input
+    ref={galleryInputRef}
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={handleImages}
+    style={{ display: "none" }}
+  />
 
-                  <strong>
-                    Choose Product Photos
-                  </strong>
+  <div
+    style={photoPickerStyle}
+    onClick={() => setShowPhotoOptions(true)}
+  >
+    <span style={photoPickerIconStyle}>📸</span>
 
-                  <small>
-                    JPG, PNG or WEBP • Maximum 5 photos
-                  </small>
-                </label>
+    <strong>Choose Product Photos</strong>
+
+    <small>
+      JPG, PNG or WEBP • Maximum 5 photos
+    </small>
+  </div>
+</>
 
                 {(form.images || []).length > 0 && (
                   <div style={photoPreviewGridStyle}>
@@ -3018,7 +3099,72 @@ specifications: {
         )}
       </main>
     </div>
-  );
+);
+{showPhotoOptions && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.45)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 9999,
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: "25px",
+        borderRadius: "16px",
+        width: "320px",
+        textAlign: "center",
+      }}
+    >
+      <h3 style={{ marginTop: 0 }}>
+        Select Photo Source
+      </h3>
+
+      <button
+        style={{
+          ...blueButtonStyle,
+          width: "100%",
+          marginBottom: "10px",
+        }}
+        onClick={() => {
+          setShowPhotoOptions(false);
+          cameraInputRef.current?.click();
+        }}
+      >
+        📸 Camera
+      </button>
+
+      <button
+        style={{
+          ...greenButton,
+          width: "100%",
+          marginBottom: "10px",
+        }}
+        onClick={() => {
+          setShowPhotoOptions(false);
+          galleryInputRef.current?.click();
+        }}
+      >
+        🖼 Gallery
+      </button>
+
+      <button
+        style={{
+          ...redButton,
+          width: "100%",
+        }}
+        onClick={() => setShowPhotoOptions(false)}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}  
 }
 
 /* =====================================================
@@ -3340,6 +3486,7 @@ const photoUploadHeaderStyle = {
   alignItems: "flex-start",
   gap: "16px",
   marginBottom: "16px",
+  flexWrap: "wrap",
 };
 
 const photoUploadTitleStyle = {
@@ -3485,13 +3632,13 @@ const aiListingBoxStyle = {
   padding: "16px",
   borderRadius: "14px",
   border: "1px solid #ddd6fe",
-  background:
-    "linear-gradient(135deg, #faf5ff, #eff6ff)",
+  background: "linear-gradient(135deg, #faf5ff, #eff6ff)",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
   gap: "16px",
   flexWrap: "wrap",
+  width: "100%",
 };
 
 const aiListingTitleStyle = {
@@ -3520,7 +3667,7 @@ const aiButtonStyle = {
 
 const cardStyle = {
   background: "white",
-  padding: "30px",
+  padding: "20px",
   borderRadius: "14px",
   boxShadow:
     "0 3px 12px rgba(0,0,0,0.06)",
@@ -3536,7 +3683,7 @@ const statCardStyle = {
 
 const orderCardStyle = {
   background: "white",
-  padding: "24px",
+  padding: "18px",
   borderRadius: "14px",
   boxShadow:
     "0 3px 12px rgba(0,0,0,0.06)",
