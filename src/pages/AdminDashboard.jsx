@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiMenu, FiX } from "react-icons/fi";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const navigate = useNavigate();
-
+const [menuOpen, setMenuOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [sellers, setSellers] = useState([]);
 
@@ -512,13 +513,18 @@ function AdminDashboard() {
 
   return (
     <div className="admin-layout">
-
+<button
+  className="menu-toggle"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+</button>
       {/* =========================
           SIDEBAR
       ========================= */}
 
-      <aside
-        className="admin-sidebar"
+     <aside 
+     className={`admin-sidebar ${menuOpen ? "open" : ""}`}
         style={{
           minHeight: "100vh",
           display: "flex",

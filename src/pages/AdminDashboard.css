@@ -257,3 +257,66 @@ td {
     grid-template-columns: 1fr;
   }
 }
+.menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .menu-toggle{
+    display:flex;
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:2000;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    width:45px;
+    height:45px;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+  }
+
+  .admin-sidebar{
+    left:-260px;
+    transition:.3s;
+    z-index:1500;
+  }
+
+  .admin-sidebar.open{
+    left:0;
+  }
+
+  .admin-main{
+    margin-left:0;
+    width:100%;
+    padding:70px 15px 20px;
+  }
+
+  .admin-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+  }
+
+  .admin-header h1{
+    font-size:32px;
+  }
+
+  .admin-stats{
+    grid-template-columns:1fr;
+  }
+
+  .section-title{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  table{
+    min-width:700px;
+  }
+}
