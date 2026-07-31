@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
-function SefunllerDashboard() {
+function SellerDashboard() {
   const navigate = useNavigate();
 
   const [activePage, setActivePage] = useState("dashboard");
