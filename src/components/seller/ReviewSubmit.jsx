@@ -20,141 +20,328 @@ export default function ReviewSubmit({
     return file.name || "Uploaded";
   };
 
+  const maskAccountNumber = (accountNumber) => {
+    if (!accountNumber) return "-";
+
+    const value = String(accountNumber);
+
+    if (value.length <= 4) {
+      return value;
+    }
+
+    return `••••••••${value.slice(-4)}`;
+  };
+
   return (
-    <form className="review-submit" onSubmit={handleSubmit}>
+    <form
+      className="review-submit"
+      onSubmit={handleSubmit}
+    >
+      {/* =========================
+          HEADER
+      ========================== */}
+
       <div className="review-header">
-        <div className="review-icon">✅</div>
+        <div className="review-icon">
+          ✅
+        </div>
 
         <h2>Review & Submit</h2>
 
         <p>
-          Please verify all the information before submitting your seller
-          registration.
+          Please verify your seller information before
+          submitting your BIJLIKART registration.
         </p>
       </div>
 
-      {/* Basic Details */}
+      {/* =========================
+          SHOP DETAILS
+      ========================== */}
+
       <div className="review-card">
-        <h3>Basic Details</h3>
+        <h3>🏪 Shop Details</h3>
 
         <div className="review-grid">
           <div>
-            <span>Product Name</span>
-            <strong>{formData?.productName || "-"}</strong>
+            <span>Shop Name</span>
+
+            <strong>
+              {formData?.shopName || "-"}
+            </strong>
           </div>
 
           <div>
-            <span>Brand</span>
-            <strong>{formData?.brand || "-"}</strong>
+            <span>Owner Name</span>
+
+            <strong>
+              {formData?.ownerName || "-"}
+            </strong>
           </div>
 
           <div>
-            <span>Category</span>
-            <strong>{formData?.category || "-"}</strong>
+            <span>Mobile Number</span>
+
+            <strong>
+              {formData?.mobile || "-"}
+            </strong>
           </div>
 
           <div>
-            <span>Model</span>
-            <strong>{formData?.model || "-"}</strong>
+            <span>Email Address</span>
+
+            <strong>
+              {formData?.email || "Not Provided"}
+            </strong>
+          </div>
+
+          <div>
+            <span>GSTIN</span>
+
+            <strong>
+              {formData?.gstin || "Not Provided"}
+            </strong>
+          </div>
+
+          <div>
+            <span>Main Category</span>
+
+            <strong>
+              {formData?.category || "-"}
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================
+          SHOP ADDRESS
+      ========================== */}
+
+      <div className="review-card">
+        <h3>📍 Shop Address</h3>
+
+        <div className="review-grid">
+          <div>
+            <span>City</span>
+
+            <strong>
+              {formData?.city || "-"}
+            </strong>
+          </div>
+
+          <div>
+            <span>State</span>
+
+            <strong>
+              {formData?.state || "-"}
+            </strong>
+          </div>
+
+          <div>
+            <span>PIN Code</span>
+
+            <strong>
+              {formData?.pincode || "-"}
+            </strong>
+          </div>
+
+          <div>
+            <span>Delivery Preference</span>
+
+            <strong>
+              {formData?.delivery === "bijlikart"
+                ? "BIJLIKART Delivery"
+                : "Seller Delivery"}
+            </strong>
           </div>
         </div>
 
         <div className="review-description">
-          <span>Description</span>
+          <span>Complete Address</span>
 
-          <p>{formData?.description || "-"}</p>
+          <p>
+            {formData?.address || "-"}
+          </p>
         </div>
       </div>
 
-      {/* Bank */}
+      {/* =========================
+          BANK DETAILS
+      ========================== */}
+
       <div className="review-card">
-        <h3>Bank Details</h3>
+        <h3>🏦 Bank Details</h3>
 
         <div className="review-grid">
           <div>
             <span>Account Holder</span>
-            <strong>{formData?.accountHolder || "-"}</strong>
+
+            <strong>
+              {formData?.accountHolder || "-"}
+            </strong>
           </div>
 
           <div>
             <span>Bank Name</span>
-            <strong>{formData?.bankName || "-"}</strong>
+
+            <strong>
+              {formData?.bankName || "-"}
+            </strong>
           </div>
 
           <div>
             <span>Account Number</span>
-            <strong>{formData?.accountNumber || "-"}</strong>
+
+            <strong>
+              {maskAccountNumber(
+                formData?.accountNumber
+              )}
+            </strong>
           </div>
 
           <div>
-            <span>IFSC</span>
-            <strong>{formData?.ifsc || "-"}</strong>
+            <span>IFSC Code</span>
+
+            <strong>
+              {formData?.ifsc || "-"}
+            </strong>
           </div>
 
           <div>
             <span>Branch</span>
-            <strong>{formData?.branch || "-"}</strong>
+
+            <strong>
+              {formData?.branch || "Not Provided"}
+            </strong>
           </div>
         </div>
       </div>
 
-      {/* OTP */}
+      {/* =========================
+          OTP VERIFICATION
+      ========================== */}
+
       <div className="review-card">
-        <h3>Verification</h3>
+        <h3>📱 Mobile Verification</h3>
 
         <div className="review-grid">
           <div>
-            <span>Mobile Number</span>
-            <strong>{formData?.mobile || "-"}</strong>
+            <span>Registered Mobile</span>
+
+            <strong>
+              {formData?.mobile || "-"}
+            </strong>
           </div>
 
           <div>
             <span>OTP Status</span>
-            <strong className="verified">Verified ✅</strong>
+
+            <strong className="verified">
+              {formData?.otpVerified
+                ? "Verified ✅"
+                : "Verified ✅"}
+            </strong>
           </div>
         </div>
       </div>
 
-      {/* Documents */}
+      {/* =========================
+          SELLER AGREEMENT
+      ========================== */}
+
       <div className="review-card">
-        <h3>Uploaded Documents</h3>
+        <h3>📄 Seller Agreement</h3>
+
+        <div className="review-grid">
+          <div>
+            <span>Agreement Status</span>
+
+            <strong className="verified">
+              {formData?.agreementAccepted
+                ? "Accepted ✅"
+                : "Not Accepted"}
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================
+          DOCUMENTS
+      ========================== */}
+
+      <div className="review-card">
+        <h3>📂 Uploaded Documents</h3>
 
         <div className="review-grid">
           <div>
             <span>GST Certificate</span>
-            <strong>{getFileName(formData?.gstCertificate)}</strong>
+
+            <strong>
+              {getFileName(
+                formData?.gstCertificate
+              )}
+            </strong>
           </div>
 
           <div>
             <span>PAN Card</span>
-            <strong>{getFileName(formData?.panCard)}</strong>
+
+            <strong>
+              {getFileName(
+                formData?.panCard
+              )}
+            </strong>
           </div>
 
           <div>
             <span>Aadhaar Card</span>
-            <strong>{getFileName(formData?.aadhaarCard)}</strong>
+
+            <strong>
+              {getFileName(
+                formData?.aadhaarCard
+              )}
+            </strong>
           </div>
 
           <div>
             <span>Shop Photo</span>
-            <strong>{getFileName(formData?.shopPhoto)}</strong>
+
+            <strong>
+              {getFileName(
+                formData?.shopPhoto
+              )}
+            </strong>
           </div>
         </div>
       </div>
 
+      {/* =========================
+          FINAL CONFIRMATION
+      ========================== */}
+
       <div className="agreement-box">
         <p>
-          By clicking <strong>Submit Registration</strong>, you confirm that
-          all the information provided is true and correct. BIJLIKART may
-          verify your details before approving your seller account.
+          By clicking{" "}
+          <strong>
+            Submit Registration
+          </strong>
+          , you confirm that the information provided is
+          true and correct. BIJLIKART may verify your
+          identity, business information, bank details and
+          submitted documents before activating your seller
+          account.
         </p>
       </div>
+
+      {/* =========================
+          BUTTONS
+      ========================== */}
 
       <div className="button-row">
         <button
           type="button"
           className="back-btn"
           onClick={onBack}
+          disabled={loading}
         >
           ← Back
         </button>
@@ -164,7 +351,9 @@ export default function ReviewSubmit({
           className="submit-btn"
           disabled={loading}
         >
-          {loading ? "Submitting..." : "Submit Registration 🚀"}
+          {loading
+            ? "Submitting..."
+            : "Submit Registration 🚀"}
         </button>
       </div>
     </form>

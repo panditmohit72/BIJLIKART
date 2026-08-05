@@ -1,0 +1,376 @@
+/* src/components/seller/SellerAgreement.css */
+
+/* =========================================
+   SELLER AGREEMENT
+========================================= */
+
+.seller-agreement {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.seller-agreement .agreement-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.seller-agreement .agreement-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eff6ff;
+  border-radius: 14px;
+
+  font-size: 26px;
+}
+
+.seller-agreement .agreement-header h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.seller-agreement .agreement-header p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   AGREEMENT BOX
+========================================= */
+
+.seller-agreement .agreement-box {
+  max-height: 430px;
+  overflow-y: auto;
+
+  padding: 25px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  color: #475569;
+  line-height: 1.7;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.seller-agreement .agreement-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.seller-agreement .agreement-box::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.seller-agreement .agreement-box::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.seller-agreement .agreement-box::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.seller-agreement .agreement-box h3 {
+  margin: 0 0 20px;
+  color: #172033;
+  font-size: 20px;
+}
+
+.seller-agreement .agreement-box h4 {
+  margin: 24px 0 7px;
+  color: #1e3a5f;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.seller-agreement .agreement-box p {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* =========================================
+   IMPORTANT NOTE
+========================================= */
+
+.seller-agreement .agreement-note {
+  margin-top: 25px;
+  padding: 16px 18px;
+
+  background: #eff6ff;
+
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #1688e8;
+  border-radius: 10px;
+}
+
+.seller-agreement .agreement-note strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #1e40af;
+  font-size: 14px;
+}
+
+.seller-agreement .agreement-note p {
+  margin: 0;
+  color: #475569;
+}
+
+/* =========================================
+   ACCEPTANCE CHECKBOX
+========================================= */
+
+.seller-agreement .agreement-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  margin-top: 25px;
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.seller-agreement .agreement-checkbox:hover {
+  border-color: #1688e8;
+  background: #f8fbff;
+}
+
+.seller-agreement .agreement-checkbox:has(input:checked) {
+  border-color: #1688e8;
+  background: #eff7ff;
+  box-shadow: 0 0 0 2px rgba(22, 136, 232, 0.08);
+}
+
+.seller-agreement .agreement-checkbox input {
+  width: 18px;
+  height: 18px;
+
+  margin-top: 2px;
+
+  flex-shrink: 0;
+
+  accent-color: #1688e8;
+  cursor: pointer;
+}
+
+.seller-agreement .agreement-checkbox span {
+  color: #334155;
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+.seller-agreement .agreement-error {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #dc2626;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* =========================================
+   BUTTON ROW
+========================================= */
+
+.seller-agreement .button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-top: 30px;
+  padding-top: 24px;
+
+  border-top: 1px solid #e8edf4;
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.seller-agreement .back-btn {
+  min-width: 120px;
+
+  padding: 13px 22px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.seller-agreement .back-btn:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+  color: #172033;
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   NEXT BUTTON
+========================================= */
+
+.seller-agreement .next-btn {
+  min-width: 200px;
+
+  padding: 14px 25px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: linear-gradient(
+    135deg,
+    #1688e8,
+    #0d6fc5
+  );
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.seller-agreement .next-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(22, 136, 232, 0.25);
+}
+
+.seller-agreement .next-btn:active {
+  transform: translateY(0);
+}
+
+.seller-agreement .next-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .seller-agreement {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+
+  .seller-agreement .agreement-header h2 {
+    font-size: 23px;
+  }
+
+  .seller-agreement .agreement-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+
+  .seller-agreement .agreement-box {
+    max-height: 380px;
+    padding: 20px;
+  }
+
+  .seller-agreement .button-row {
+    flex-direction: column-reverse;
+  }
+
+  .seller-agreement .back-btn,
+  .seller-agreement .next-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .seller-agreement {
+    padding: 18px 14px;
+  }
+
+  .seller-agreement .agreement-header {
+    gap: 11px;
+  }
+
+  .seller-agreement .agreement-header h2 {
+    font-size: 21px;
+  }
+
+  .seller-agreement .agreement-header p {
+    font-size: 13px;
+  }
+
+  .seller-agreement .agreement-box {
+    max-height: 340px;
+    padding: 16px;
+  }
+
+  .seller-agreement .agreement-box h3 {
+    font-size: 18px;
+  }
+
+  .seller-agreement .agreement-checkbox {
+    padding: 15px;
+  }
+}

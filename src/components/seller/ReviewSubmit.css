@@ -1,5 +1,9 @@
 /* src/components/seller/ReviewSubmit.css */
 
+/* =========================================
+   REVIEW & SUBMIT
+========================================= */
+
 .review-submit {
   width: 100%;
   background: #ffffff;
@@ -8,195 +12,366 @@
   box-sizing: border-box;
 }
 
-.review-header {
+/* =========================================
+   HEADER
+========================================= */
+
+.review-submit .review-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 30px;
 }
 
-.review-icon {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 18px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  color: #ffffff;
+.review-submit .review-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 12px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
+
+  background: #ecfdf5;
+  border-radius: 50%;
+
+  font-size: 28px;
 }
 
-.review-header h2 {
+.review-submit .review-header h2 {
   margin: 0;
-  font-size: 30px;
+  color: #172033;
+  font-size: 28px;
   font-weight: 700;
-  color: #1f2937;
 }
 
-.review-header p {
-  margin-top: 10px;
-  color: #6b7280;
-  font-size: 15px;
+.review-submit .review-header p {
+  max-width: 650px;
+  margin: 8px auto 0;
+
+  color: #64748b;
+  font-size: 14px;
   line-height: 1.6;
 }
 
-.review-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 22px;
-  transition: all 0.25s ease;
+/* =========================================
+   REVIEW CARDS
+========================================= */
+
+.review-submit .review-card {
+  margin-bottom: 20px;
+  padding: 22px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
 }
 
-.review-card:hover {
-  border-color: #2563eb;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
-}
-
-.review-card h3 {
+.review-submit .review-card h3 {
   margin: 0 0 18px;
-  font-size: 20px;
+
+  color: #172033;
+  font-size: 17px;
   font-weight: 700;
-  color: #111827;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 10px;
+
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.review-grid {
+/* =========================================
+   REVIEW GRID
+========================================= */
+
+.review-submit .review-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 18px 25px;
 }
 
-.review-grid div {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 10px;
+.review-submit .review-grid > div {
+  min-width: 0;
 }
 
-.review-grid span {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 6px;
-}
-
-.review-grid strong {
-  font-size: 15px;
-  color: #111827;
-  font-weight: 600;
-  word-break: break-word;
-}
-
-.review-description {
-  margin-top: 18px;
-  padding: 16px;
-  background: #f9fafb;
-  border-radius: 10px;
-}
-
-.review-description span {
+.review-submit .review-grid span {
   display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: #6b7280;
+
+  margin-bottom: 5px;
+
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.review-description p {
-  margin: 0;
-  color: #111827;
-  line-height: 1.6;
-}
+.review-submit .review-grid strong {
+  display: block;
 
-.verified {
-  color: #16a34a !important;
-}
-
-.agreement-box {
-  margin-top: 28px;
-  margin-bottom: 30px;
-  padding: 18px;
-  border-left: 5px solid #2563eb;
-  background: #eff6ff;
-  border-radius: 10px;
-}
-
-.agreement-box p {
-  margin: 0;
-  color: #374151;
-  line-height: 1.7;
+  color: #334155;
   font-size: 14px;
-}
-
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.back-btn,
-.submit-btn {
-  min-width: 180px;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 15px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
 }
 
-.back-btn {
+/* =========================================
+   DESCRIPTION / ADDRESS
+========================================= */
+
+.review-submit .review-description {
+  margin-top: 20px;
+  padding-top: 18px;
+
+  border-top: 1px solid #e2e8f0;
+}
+
+.review-submit .review-description span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.review-submit .review-description p {
+  margin: 0;
+
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   VERIFIED STATUS
+========================================= */
+
+.review-submit .verified {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+
+  padding: 5px 10px;
+
+  background: #dcfce7;
+  color: #15803d !important;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* =========================================
+   FINAL AGREEMENT BOX
+========================================= */
+
+.review-submit .agreement-box {
+  margin-top: 25px;
+  padding: 18px 20px;
+
+  background: #eff6ff;
+
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #1688e8;
+  border-radius: 12px;
+}
+
+.review-submit .agreement-box p {
+  margin: 0;
+
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.review-submit .agreement-box strong {
+  color: #1e40af;
+}
+
+/* =========================================
+   BUTTON ROW
+========================================= */
+
+.review-submit .button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-top: 30px;
+  padding-top: 24px;
+
+  border-top: 1px solid #e8edf4;
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.review-submit .back-btn {
+  min-width: 120px;
+
+  padding: 13px 22px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+
   background: #ffffff;
-  border: 1px solid #d1d5db;
-  color: #374151;
+  color: #475569;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.back-btn:hover {
-  background: #f3f4f6;
+.review-submit .back-btn:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: #f8fafc;
+  color: #172033;
+
+  transform: translateY(-1px);
 }
 
-.submit-btn {
+/* =========================================
+   SUBMIT BUTTON
+========================================= */
+
+.review-submit .submit-btn {
+  min-width: 220px;
+
+  padding: 14px 26px;
+
   border: none;
+  border-radius: 10px;
+
+  background: linear-gradient(
+    135deg,
+    #16a34a,
+    #15803d
+  );
+
   color: #ffffff;
-  background: linear-gradient(135deg, #16a34a, #15803d);
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.submit-btn:hover:not(:disabled) {
+.review-submit .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.25);
+
+  box-shadow:
+    0 10px 24px rgba(22, 163, 74, 0.25);
 }
 
-.submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.back-btn:active,
-.submit-btn:active {
+.review-submit .submit-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
+/* =========================================
+   DISABLED BUTTONS
+========================================= */
+
+.review-submit .back-btn:disabled,
+.review-submit .submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
+
 @media (max-width: 768px) {
   .review-submit {
-    padding: 20px;
+    padding: 22px 18px;
+    border-radius: 14px;
   }
 
-  .review-header h2 {
+  .review-submit .review-header h2 {
     font-size: 24px;
   }
 
-  .review-grid {
+  .review-submit .review-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .button-row {
+  .review-submit .review-card {
+    padding: 18px;
+  }
+
+  .review-submit .button-row {
     flex-direction: column-reverse;
   }
 
-  .back-btn,
-  .submit-btn {
+  .review-submit .back-btn,
+  .review-submit .submit-btn {
     width: 100%;
+  }
+}
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .review-submit {
+    padding: 18px 14px;
+  }
+
+  .review-submit .review-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .review-submit .review-header h2 {
+    font-size: 22px;
+  }
+
+  .review-submit .review-header p {
+    font-size: 13px;
+  }
+
+  .review-submit .review-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .review-submit .review-card h3 {
+    font-size: 16px;
+  }
+
+  .review-submit .agreement-box {
+    padding: 15px;
   }
 }
