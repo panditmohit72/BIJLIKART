@@ -3097,10 +3097,7 @@ specifications: {
             )}
           </div>
         )}
-      </main>
-    </div>
-);
-{showPhotoOptions && (
+      {showPhotoOptions && (
   <div
     style={{
       position: "fixed",
@@ -3125,33 +3122,29 @@ specifications: {
         Select Photo Source
       </h3>
 
-      <button
-        style={{
-          ...blueButtonStyle,
-          width: "100%",
-          marginBottom: "10px",
-        }}
-        onClick={() => {
-          setShowPhotoOptions(false);
-          cameraInputRef.current?.click();
-        }}
-      >
-        📸 Camera
-      </button>
+     <button
+  onClick={() => {
+    setShowPhotoOptions(false);
 
-      <button
-        style={{
-          ...greenButton,
-          width: "100%",
-          marginBottom: "10px",
-        }}
-        onClick={() => {
-          setShowPhotoOptions(false);
-          galleryInputRef.current?.click();
-        }}
-      >
-        🖼 Gallery
-      </button>
+    setTimeout(() => {
+      cameraInputRef.current?.click();
+    }, 100);
+  }}
+>
+  📸 Camera
+</button>
+
+     <button
+  onClick={() => {
+    setShowPhotoOptions(false);
+
+    setTimeout(() => {
+      galleryInputRef.current?.click();
+    }, 100);
+  }}
+>
+  🖼 Gallery
+</button>
 
       <button
         style={{
@@ -3165,6 +3158,10 @@ specifications: {
     </div>
   </div>
 )}  
+
+      </main>
+    </div>
+);
 }
 
 /* =====================================================

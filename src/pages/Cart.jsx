@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Cart({
@@ -7,7 +8,17 @@ function Cart({
   decreaseQuantity,
 }) {
   const navigate = useNavigate();
+const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+useEffect(() => {
+  const resize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener("resize", resize);
+
+  return () => window.removeEventListener("resize", resize);
+}, []);
   // Handles both:
   // 49999
   // "₹49,999"
@@ -147,13 +158,14 @@ function Cart({
           </div>
         ) : (
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "minmax(0, 2fr) minmax(280px, 1fr)",
-              gap: "25px",
-              alignItems: "start",
-            }}
+           style={{
+  display: "grid",
+  gridTemplateColumns: isMobile
+    ? "1fr"
+    : "minmax(0,2fr) minmax(320px,1fr)",
+  gap: "25px",
+  alignItems: "start",
+}}
           >
             {/* CART PRODUCTS */}
 
@@ -167,7 +179,7 @@ function Cart({
                   <div
                     key={`${item.id || item.name}-${index}`}
                     style={{
-                      display: "flex",
+                      display: isMobile ? "block" : "flex",
                       alignItems: "center",
                       gap: "22px",
                       background: "white",
@@ -188,6 +200,7 @@ function Cart({
                         borderRadius: "10px",
                         padding: "10px",
                         boxSizing: "border-box",
+                      margin: isMobile ? "0 auto 15px" : "0",
                       }}
                     >
                       <img
@@ -407,8 +420,10 @@ function Cart({
                 borderRadius: "14px",
                 boxShadow:
                   "0 3px 12px rgba(0,0,0,0.06)",
-                position: "sticky",
-                top: "20px",
+                position: isMobile ? "static" : "sticky",
+top: isMobile ? "0" : "20px",
+width: "100%",
+boxSizing: "border-box",
               }}
             >
               <h2

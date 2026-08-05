@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Checkout({ cart }) {
@@ -13,7 +13,19 @@ function Checkout({ cart }) {
   });
 
   const [orderSuccess, setOrderSuccess] = useState(null);
+const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+}, []);
   // ================================
   // PRICE NUMBER
   // ================================
@@ -397,12 +409,13 @@ function Checkout({ cart }) {
       </p>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "minmax(0, 1.5fr) minmax(300px, 1fr)",
-          gap: "30px",
-        }}
+       style={{
+  display: "grid",
+  gridTemplateColumns: isMobile
+    ? "1fr"
+    : "minmax(0,1.5fr) minmax(320px,1fr)",
+  gap: "25px",
+}}
       >
         {/* DELIVERY FORM */}
 
@@ -410,7 +423,9 @@ function Checkout({ cart }) {
           onSubmit={handleOrder}
           style={{
             background: "white",
-            padding: "30px",
+            padding: isMobile ? "18px" : "30px",
+             width: "100%",
+             boxSizing: "border-box",
             borderRadius: "15px",
             boxShadow:
               "0 3px 12px rgba(0,0,0,0.08)",
@@ -575,7 +590,9 @@ function Checkout({ cart }) {
         <div
           style={{
             background: "white",
-            padding: "25px",
+            padding: isMobile ? "18px" : "25px",
+            width: "100%",
+          boxSizing: "border-box",
             borderRadius: "15px",
             height: "fit-content",
             boxShadow:
